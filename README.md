@@ -7,7 +7,7 @@ The life of a germ can be hard! In this game, you are a germ, fighting on a loaf
 
 ### Basic Outline
 A basic outline design from the menu:
-!Design Outline: Menu(https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Menu.JPG?raw=true)
+<img src="https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Menu.JPG" alt="Design Outline: Menu">
 
 A basic outline design while playing:
-!Design Outline: Playing(https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Playing.JPG?raw=true)
+<img src="https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Menu.JPG" alt="Design Outline: Playing">
