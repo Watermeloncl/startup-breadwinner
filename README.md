@@ -1,6 +1,6 @@
 # Breadwinner Startup
 The Game Breadwinner: a CS260 Web Startup
-Running right now on http://3.19.194.161!
+Running now on http://bread-winner.click!
 
 ## Design and Pitch
 The life of a germ can be hard! In this game, you are a germ, fighting on a loaf of bread against other germs, just trying to get the best slice. As you navigate and eat away at the bread, be careful, the other germs can and will fight back! As you progress through the loaf, the number of enemy germs increases, and your job only gets harder. Get as far as you can to get on the leaderboard and be crowned Top Germ!
