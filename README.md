@@ -10,7 +10,7 @@ A basic outline design from the menu:
 <img src="https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Menu.JPG" alt="Design Outline: Menu">
 
 A basic outline design while playing:
-<img src="https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Menu.JPG" alt="Design Outline: Playing">
+<img src="https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Playing.JPG" alt="Design Outline: Playing">
 
 ### Key Features:
 - Secure login over HTTPS
