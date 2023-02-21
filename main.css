@@ -1,0 +1,98 @@
+:root {
+    --scoresHeight: 50px; /*Calculate?*/
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+header {
+    flex: 0 80px;
+    display: flex;
+    background-color: #bf7e34;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+footer {
+    flex: 0 30px;
+    background-color: #a36b2a;
+}
+
+main {
+    position: static;
+    flex: 1 calc(100vh - 110px);
+    background-color: #e39b49;
+}
+
+#mainTitle {
+    margin: 15px;
+    font-size: 2.5em;
+}
+
+#mainBox {
+    position: relative;
+    /*display: none;*/
+    background-color: blue;
+    left: 25%;
+    top: 0;
+    width: 50%;
+    height: calc(100% - 30px);
+    z-index: 2;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+}
+
+#scores {
+    position: absolute;
+    background-color: green;
+    z-index: 2;
+    width: 20%;
+    height: var(--scoresHeight);
+}
+
+#mainHeader {
+    background-color: green;
+    flex: 0 80px;
+}
+
+#mainGame {
+    background-color: #bf7e34;
+    flex: 1 calc(100% - 90px);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#mainFooter {
+    flex: 0 20px;
+    background-color: brown;
+
+}
+
+#game {
+    position: relative;
+    z-index: 4;
+    max-width: calc(100vh - 230px);
+    background-color: blue;
+    aspect-ratio: 1 / 1;
+    top: 0px;
+    margin: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#gridContainer {
+    background-color: yellow;
+    position: absolute;
+    margin: 7px;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    height: calc(100% - 14px);
+    width: calc(100% - 14px);
+}
