@@ -9,15 +9,15 @@
   </head>
   <body>
     <header>
-      <p id="menuTopTitle" class="mainTitle">Breadwinner!<p>
+      <!--<p id="menuTopTitle" class="mainTitle">Breadwinner!<p>-->
     </header>
-    <main id="mainMenu">
-      <div id="topMenu">
-        <div class="mainTitle">Breadwinner!</div>
-        <button id="playButton" class="mainButton"><a href="play.html">Play</a></button>
-        <button id="tutorialButton" class="mainButton"><a href="tutorial.html">Tutorial</a></button>
-        <button id="leaderboardButton" class="mainButton"><a href="leaderboard.html">Leaderboard</a></button>
-        <button id="logoutButton"><a href="index.html">Logout</a></button>
+    <main>
+      <div id="indexTopMenu">
+        <div class="indexTitle">Breadwinner!</div>
+        <form method="get" action="home.html">
+          <input type="text" id="name" placeholder="Your name here" />
+          <button id="loginButton" type="submit" class="submitButton">Login</button>
+        </form>
       </div>
     </main>
     <footer>

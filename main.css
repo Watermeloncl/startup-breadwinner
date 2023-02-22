@@ -1,3 +1,7 @@
+/* ================================================================
+Non-specific styles
+================================================================ */
+
 :root {
     --scoresHeight: 50px; /*Calculate?*/
 }
@@ -34,20 +38,84 @@ main {
     position: static;
     flex: 1 calc(100vh - 110px);
     background-color: #e39b49;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+button {
+    border: 1px solid black;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.25em;
+    background-color: #4da4fa;
+}
+
+button:hover {
+    cursor: pointer;
+    outline: 5px solid #4da4fa; /*todo fix me*/
+}
+
+/* ================================================================
+Home page
+================================================================ */
 
 .mainTitle {
     margin: 15px;
     font-size: 2.5em;
 }
 
-#menuTopTitle {
+#homeTopTitle {
     display: none;
+}
+
+#homeTopMenu {
+    background-color: green;
+    width: 350px;
+    height: 70%;
+    border-radius: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.homeButton {
+    width: 75%;
+    height: 45px;
+    text-align: center;
+}
+
+#homeMainTitle {
+    margin: 5px 0 0 0;
+}
+
+#homePlayButton {
+    margin-top: -15px;
+}
+
+#homeLogoutButton {
+    text-align: center;
+    width: 35%;
+    height: 35px;
+    margin-bottom: 5%;
+}
+
+/* ================================================================
+index page
+================================================================ */
+
+/* ================================================================
+Play page
+================================================================ */
+
+#playMain {
+    justify-content: unset;
+    align-items: unset;
 }
 
 #mainBox {
     position: relative;
-    /*display: none;*/
     background-color: blue;
     left: 25%;
     top: 0;
@@ -62,7 +130,7 @@ main {
 
 #scores {
     position: absolute;
-    background-color: 258850;
+    background-color: #258850;
     z-index: 2;
     width: 20%;
     height: var(--scoresHeight);
@@ -134,57 +202,14 @@ main {
     left: 60%;
 }
 
-#buttonContainer {
+#playButtonContainer {
     left: 80%;
 }
 
-#mainMenu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+/* ================================================================
+Tutorial page
+================================================================ */
 
-#topMenu {
-    background-color: green;
-    width: 350px;
-    height: 70%;
-    border-radius: 25%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.mainButton {
-    width: 75%;
-    height: 45px;
-    text-align: center;
-}
-
-#mainTitle {
-    margin: 5px 0 0 0;
-}
-
-#playButton {
-    margin-top: -15px;
-}
-
-button {
-    border: 1px solid black;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 1.25em;
-    background-color: #4da4fa;
-}
-
-button:hover {
-    cursor: pointer;
-    outline: 5px solid #4da4fa; /*todo fix me*/
-}
-
-#logoutButton {
-    text-align: center;
-    width: 35%;
-    height: 35px;
-    margin-bottom: 5%;
-}
+/* ================================================================
+Leaderboard page
+================================================================ */
