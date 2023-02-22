@@ -2,6 +2,11 @@
     --scoresHeight: 50px; /*Calculate?*/
 }
 
+a {
+    text-decoration: none;
+    color: unset;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -18,7 +23,11 @@ header {
 
 footer {
     flex: 0 30px;
+    max-height: 30px;
+    display: flex;
     background-color: #a36b2a;
+    align-items: center;
+    padding-left: 10px;
 }
 
 main {
@@ -27,9 +36,13 @@ main {
     background-color: #e39b49;
 }
 
-#mainTitle {
+.mainTitle {
     margin: 15px;
     font-size: 2.5em;
+}
+
+#menuTopTitle {
+    display: none;
 }
 
 #mainBox {
@@ -49,7 +62,7 @@ main {
 
 #scores {
     position: absolute;
-    background-color: green;
+    background-color: 258850;
     z-index: 2;
     width: 20%;
     height: var(--scoresHeight);
@@ -57,15 +70,12 @@ main {
 
 #mainHeader {
     background-color: green;
-    flex: 0 80px;
+    flex: 0 60px;
 }
 
 #mainGame {
     background-color: #bf7e34;
     flex: 1 calc(100% - 90px);
-    justify-content: center;
-    align-items: center;
-    text-align: center;
 }
 
 #mainFooter {
@@ -77,7 +87,7 @@ main {
 #game {
     position: relative;
     z-index: 4;
-    max-width: calc(100vh - 230px);
+    max-width: calc(100vh - 220px);
     background-color: blue;
     aspect-ratio: 1 / 1;
     top: 0px;
@@ -95,4 +105,86 @@ main {
     left: 0;
     height: calc(100% - 14px);
     width: calc(100% - 14px);
+}
+
+.topBar {
+    position: absolute;
+    background-color: orange;
+    width: calc(20% - 5px);
+    height: 50px;
+    z-index: 5;
+    top: 0;
+    border: 5px solid red;
+    text-align: center;
+}
+
+#lives {
+    left: 0px;
+}
+
+#coverage {
+    left: 20%;
+}
+
+#level {
+    left: 40%;
+}
+
+#timer {
+    left: 60%;
+}
+
+#buttonContainer {
+    left: 80%;
+}
+
+#mainMenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#topMenu {
+    background-color: green;
+    width: 350px;
+    height: 70%;
+    border-radius: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.mainButton {
+    width: 75%;
+    height: 45px;
+    text-align: center;
+}
+
+#mainTitle {
+    margin: 5px 0 0 0;
+}
+
+#playButton {
+    margin-top: -15px;
+}
+
+button {
+    border: 1px solid black;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.25em;
+    background-color: #4da4fa;
+}
+
+button:hover {
+    cursor: pointer;
+    outline: 5px solid #4da4fa; /*todo fix me*/
+}
+
+#logoutButton {
+    text-align: center;
+    width: 35%;
+    height: 35px;
+    margin-bottom: 5%;
 }
