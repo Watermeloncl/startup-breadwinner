@@ -42,11 +42,20 @@
       </div>
       <div id="mainBox">
         <div id="mainHeader">
-          <div id="lives" class="topBar">lives</div>
-          <div id="coverage" class="topBar">coverage</div>
-          <div id="level" class="topBar">level</div>
-          <div id="timer" class="topBar">timer</div>
-          <div id="playButtonContainer" class="topBar">buttons</div>
+          <div id="lives" class="topBar"><div class="topBarText">&#10084: 5</div></div>
+          <div id="coverage" class="topBar"><div class="topBarText">&#9685: 0%</div></div>
+          <div id="level" class="topBar"><div class="topBarText">Level 4</div></div>
+          <div id="timer" class="topBar"><div class="topBarText">1:37</div></div>
+          <div id="playButtonContainer" class="topBar">
+            <button id="pauseButton" class="topBarButtons">
+              <div id="pauseLeft" class="pause"></div>
+              <div id="pauseRight" class="pause"></div>
+            </button>
+            <button id="homeButton" class="topBarButtons" onclick="location.href='home.html';">
+              <div id="homeSquare" class="homeSymbol"></div>
+              <div id="homeTriangle" class="homeSymbol"></div>
+            </button>
+          </div>
         </div>
         <div id="mainGame">
           <div id="game">

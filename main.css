@@ -233,6 +233,11 @@ Play page
     border: 1px solid black;
     text-align: center;
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-size: 1.5em;
 }
 
 #lives {
@@ -253,6 +258,69 @@ Play page
 
 #playButtonContainer {
     left: calc(80% + 5px);
+    background-color: green;
+    border: none;
+}
+
+.topBarButtons {
+    background-color: #4da4fa;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 50%;
+    border-radius: 10px;
+    border: 1px solid black;
+    margin-top: 1px;
+}
+
+.pause {
+    position: absolute;
+    background-color: black;
+    width: 20%;
+    height: 60%;
+    border-radius: 2px;
+}
+
+#pauseLeft {
+    left: 25%;
+    top: 20%;
+}
+
+#pauseRight {
+    left: 55%;
+    top: 20%;
+}
+
+#pauseButton {
+    margin-right: 10px;
+    position: relative;
+}
+
+#homeButton {
+    position: relative;
+}
+
+.homeSymbol {
+    background-color: black;
+    position: absolute;
+}
+
+#homeSquare {
+    height: 35%;
+    width: 45%;
+    left: 27.5%;
+    top: 50%;
+}
+
+#homeTriangle {
+    clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+    height: 40%;
+    width: 70%;
+    left: 15%;
+    top: 15%;
+    background-color: black;
 }
 
 .germ {
@@ -288,7 +356,7 @@ Play page
     background-color: black;
     width: 2px;
     height: 21%;
-    left: 27%;
+    left: calc(27% - 1px);
     top: 79%;
 }
 
@@ -331,10 +399,6 @@ h2 {
 /* ================================================================
 Leaderboard page
 ================================================================ */
-
-#scoresTopTitle {
-    display: none;
-}
 
 #scoresTopMenu {
     display: flex;
