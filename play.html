@@ -12,7 +12,33 @@
       <p id="playingTopTitle" class="mainTitle">Breadwinner!<p>
     </header>
     <main id="playMain">
-      <div id="scores">scores
+      <div id="scores">
+        <table id="playTableID" class="playTable">
+          <thead>
+            <tr>
+              <th class="playTable">Name</th>
+              <th class="playTable">Level</th>
+              <th class="playTable">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="playTable">Joe</td>
+              <td class="playTable">2</td>
+              <td class="playTable">3:21</td>
+            </tr>
+            <tr>
+              <td class="playTable">Steve</td>
+              <td class="playTable">1</td>
+              <td class="playTable">1:37</td>
+            </tr>
+            <tr>
+              <td class="playTable">Bob</td>
+              <td class="playTable">1</td>
+              <td class="playTable">1:48</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div id="mainBox">
         <div id="mainHeader">
@@ -24,10 +50,15 @@
         </div>
         <div id="mainGame">
           <div id="game">
-            <div id="gridContainer">gridContainer</div>
+            <div id="gameContainer">
+              <div id="player"></div>
+              <div id="germ1" class="germ"></div>
+              <div id="germ2" class="germ"></div>
+              <div id="movement1" class="movement"></div>
+            </div>
           </div>
         </div>
-        <div id="mainFooter"></div>
+        <div id="mainFooter">Use the arrow keys or WASD to move!</div>
       </div>
     </main>
     <footer>
