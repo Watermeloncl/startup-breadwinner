@@ -3,7 +3,7 @@ Non-specific styles
 ================================================================ */
 
 :root {
-    --scoresHeight: 50px; /*Calculate?*/
+    --scoresHeight: 50px; /*Calculate later dynamically with Javascript/React */
 }
 
 a {
@@ -109,6 +109,17 @@ Home page
 index page
 ================================================================ */
 
+input {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    padding-left: 8px;
+    position: relative;
+    width: 80%;
+    left: 8%;
+    min-width: min-content;
+}
+
 #indexTopTitle {
     display: none;
 }
@@ -133,6 +144,11 @@ form {
 #loginButton {
     margin-top: 10px;
     margin-bottom: 35px;
+    position: relative;
+    width: 50%;
+    left: 25%;
+    min-width: min-content;
+    padding: 5px 0;
 }
 
 /* ================================================================
