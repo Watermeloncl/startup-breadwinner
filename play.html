@@ -12,6 +12,9 @@
       <p id="playingTopTitle" class="mainTitle">Breadwinner!<p>
     </header>
     <main id="playMain">
+      <div id="startBackground">
+        <button id="startButton" onclick="startGame()">Start</button>
+      </div>
       <div id="scores">
         <table id="playTableID" class="playTable">
           <thead>
@@ -60,11 +63,11 @@
         <div id="mainGame">
           <div id="game">
             <div id="gameContainer">
+              <img src="breadBackground.jpg" id="backgroundImage" alt="">
               <div id="player"></div>
               <div id="germ1" class="germ"></div>
-              <div id="germ2" class="germ"></div>
-              <div id="movement1" class="movement"></div>
-            </div>
+              <div id="gridContainer"></div>
+              </div>
           </div>
         </div>
         <div id="mainFooter">Use the arrow keys or WASD to move!</div>
@@ -72,6 +75,9 @@
     </main>
     <footer>
         <p id="author">Created by Devin Frandsen</p>
-    </footer>
+        <p id="source"><a href="https://github.com/Watermeloncl/startup-breadwinner">Source</a></p>
+      </footer>
   </body>
+
+  <script src="play.js"></script>
 </html>

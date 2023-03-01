@@ -14,14 +14,19 @@
     <main>
       <div id="indexTopMenu" class="topMenu">
         <div id="indexMainTitle" class="mainTitle">Breadwinner!</div>
-        <form method="get" action="home.html">
-          <input type="text" id="name" placeholder="Your name here" />
-          <button id="loginButton" type="submit" class="submitButton" onclick="location.href='home.html';">Login</button>
-        </form>
+        <div>
+          <input type="text" id="playerName" placeholder="Your name here" />
+          <button id="loginButton" type="submit" class="submitButton" onclick="login()">Login</button>
+        </div>
       </div>
     </main>
     <footer>
       <p id="author">Created by Devin Frandsen</p>
+      <p id="source"><a href="https://github.com/Watermeloncl/startup-breadwinner">Source</a></p>
     </footer>
+
+    
   </body>
+
+  <script src="index.js"></script>
 </html>
