@@ -410,6 +410,7 @@ Play page
     position: absolute;
     background-color: black;
     z-index: 6;
+    opacity: 0;
 }
 
 .horizontal {
