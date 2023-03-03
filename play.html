@@ -12,8 +12,12 @@
       <p id="playingTopTitle" class="mainTitle">Breadwinner!<p>
     </header>
     <main id="playMain">
-      <div id="startBackground">
+      <div id="startBackground" class = "stoppedBackground">
         <button id="startButton" onclick="startGame()">Start</button>
+      </div>
+      <div id="endBackground"  class = "stoppedBackground" >
+        <div id="gameOverText">Game Over!</div>
+        <button id="restartButton" onclick="restartGame()">Restart</button> <!--Restart? or start?-->
       </div>
       <div id="scores">
         <table id="playTableID" class="playTable">
@@ -45,12 +49,13 @@
       </div>
       <div id="mainBox">
         <div id="mainHeader">
-          <div id="lives" class="topBar"><div class="topBarText">&#10084: 5</div></div>
-          <div id="coverage" class="topBar"><div class="topBarText">&#9685: 0%</div></div>
-          <div id="level" class="topBar"><div class="topBarText">Level 4</div></div>
-          <div id="timer" class="topBar"><div class="topBarText">1:37</div></div>
+          <div id="lives" class="topBar"><div id="livesText" class="topBarText">&#10084: 3</div></div>
+          <div id="coverage" class="topBar"><div id="coverageText" class="topBarText">&#9685: 0%</div></div>
+          <div id="level" class="topBar"><div id ="levelText" class="topBarText">Level 4</div></div>
+          <div id="timer" class="topBar"><div id ="timerText" class="topBarText">2:00</div></div>
           <div id="playButtonContainer" class="topBar">
-            <button id="pauseButton" class="topBarButtons">
+            <button id="pauseButton" class="topBarButtons" onclick="pauseGameButton()">
+              <div id="playTriangle"></div>
               <div id="pauseLeft" class="pause"></div>
               <div id="pauseRight" class="pause"></div>
             </button>

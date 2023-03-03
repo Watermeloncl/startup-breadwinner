@@ -162,25 +162,58 @@ form {
 Play page
 ================================================================ */
 
-#startBackground {
+.stoppedBackground {
     position: fixed;
-    width: 10%;
     min-width: min-content;
     min-height: min-content;
-    height: 10%;
     background-color: green;
-    top: 45%;
-    left: 45%;
     opacity: 0.9;
     z-index: 10;
     border-radius: 10px;
-    display: var(--startBackgroundDisplay);
     justify-content: center;
     align-items: center;
 }
 
+#startBackground {
+    width: 10%;
+    height: 10%;
+    top: 45%;
+    left: 45%;
+    display: var(--startBackgroundDisplay);
+}
+
+#endBackground {
+    width: 20%;
+    height: 15%;
+    top: 42.5%;
+    left: 40%;
+    display: none;
+    flex-direction: column;
+}
+
+#pauseBackground {
+    width: 15%;
+    height: 15%;
+    top: 42.5%;
+    left: 42.5%;
+    display: none;
+    flex-direction: column;
+}
+
+#gameOverText {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 #startButton {
     height: 50%;
+    min-height: min-content;
+    z-index: 11;
+    margin: 5px;
+}
+
+#restartButton {
+    height: 25%;
     min-height: min-content;
     z-index: 11;
     margin: 5px;
@@ -340,6 +373,17 @@ Play page
     top: 20%;
 }
 
+#playTriangle {
+    position: absolute;
+    background-color: black;
+    width: 60%;
+    height: 75%;
+    clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+    left: 20%;
+    top: 12.5%;
+    display: none;
+}
+
 #pauseButton {
     margin-right: 10px;
     position: relative;
@@ -408,7 +452,7 @@ Play page
 
 .grid {
     position: absolute;
-    background-color: black;
+    background-color: red;
     z-index: 6;
     opacity: 0;
 }
