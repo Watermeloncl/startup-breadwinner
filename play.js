@@ -8,10 +8,11 @@ var timer;
 var Germs = [];
 var horizontalGrid = [];
 var verticalGrid = [];
+var coverGrid = [];
 var buttonPressed = false;
 var level = 1;
 var lives = 3;
-var timeLeft = 10;
+var timeLeft = 120;
 var frame = 0;
 var timeScore = 0;
 
@@ -28,6 +29,7 @@ function setup(makeGrid) {
   Germs.push(newGerm);
 
   createGridArray();
+  createCoverArray();
   if(makeGrid) {
     createGrid();
   }
@@ -47,6 +49,15 @@ function createGridArray() {
     newArrayV[50] = 2;
     horizontalGrid.push(newArrayH);
     verticalGrid.push(newArrayV);
+  }
+}
+
+function createCoverArray() {
+  for(let i = 0; i < 50; i++) {
+    var newArrayH = [];
+    newArrayH.length = 50;
+    newArrayH.fill(0);
+    coverGrid.push(newArrayH);
   }
 }
 
@@ -89,7 +100,7 @@ function startGame() {
 }
 
 function moveGerms() {
-  timer = setInterval(move, 20);  //Change to an update/redraw function?
+  timer = setInterval(move, 200);  //Change to an update/redraw function? //20
   started = true;
 }
 
@@ -151,49 +162,69 @@ function keyPressed(e) {
     switch (e.code) {
       case "ArrowRight":
       case "KeyD":
-        if(isValid("right")) {
+        if(validity = isValid("right")) {
           playerLeft = playerLeft + 2;
           r.style.setProperty('--playerLeft', playerLeft + '%');
-          horizontalGrid[(playerLeft - 1) / 2][(playerTop + 1) / 2] = 1;
-          let idToFind = "#h" + ((playerLeft - 1) / 2) + "_" + ((playerTop + 1) / 2);
-          const divFound = document.querySelector(idToFind).style;
-          divFound.setProperty('opacity', '1');
+          if((validity == 1) || (validity == 2)) {
+            horizontalGrid[(playerLeft - 1) / 2][(playerTop + 1) / 2] = 1;
+            let idToFind = "#h" + ((playerLeft - 1) / 2) + "_" + ((playerTop + 1) / 2);
+            const divFound = document.querySelector(idToFind).style;
+            divFound.setProperty('opacity', '1');
+            if(validity == 2) {
+              finishBlock();
+            }
+          }
         }
         break;
 
       case "ArrowLeft":
       case "KeyA":
-        if(isValid("left")) {
+        if(validity = isValid("left")) {
           playerLeft = playerLeft - 2;
           r.style.setProperty('--playerLeft', playerLeft + '%');
-          horizontalGrid[(playerLeft + 1) / 2][(playerTop + 1) / 2] = 1;
-          let idToFind = "#h" + ((playerLeft + 1) / 2) + "_" + ((playerTop + 1) / 2);
-          const divFound = document.querySelector(idToFind).style;
-          divFound.setProperty('opacity', '1');
+          if((validity == 1) || (validity == 2)) {
+            horizontalGrid[(playerLeft + 1) / 2][(playerTop + 1) / 2] = 1;
+            let idToFind = "#h" + ((playerLeft + 1) / 2) + "_" + ((playerTop + 1) / 2);
+            const divFound = document.querySelector(idToFind).style;
+            divFound.setProperty('opacity', '1');
+            if(validity == 2) {
+              finishBlock();
+            }
+          }
         }
         break;
 
       case "ArrowUp":
       case "KeyW":
-        if(isValid("up")) {
+        if(validity = isValid("up")) {
           playerTop = playerTop - 2;
           r.style.setProperty('--playerTop', playerTop + '%');
-          verticalGrid[(playerTop + 1) / 2][(playerLeft + 1) / 2] = 1;
-          let idToFind = "#v" + ((playerTop + 1) / 2) + "_" + ((playerLeft + 1) / 2);
-          const divFound = document.querySelector(idToFind).style;
-          divFound.setProperty('opacity', '1');
+          if((validity == 1) || (validity == 2)) {
+            verticalGrid[(playerTop + 1) / 2][(playerLeft + 1) / 2] = 1;
+            let idToFind = "#v" + ((playerTop + 1) / 2) + "_" + ((playerLeft + 1) / 2);
+            const divFound = document.querySelector(idToFind).style;
+            divFound.setProperty('opacity', '1');
+            if(validity == 2) {
+              finishBlock();
+            }
+          }
         }
         break;
 
       case "ArrowDown":
       case "KeyS":
-        if(isValid("down")) {
+        if(validity = isValid("down")) {
           playerTop = playerTop + 2;
           r.style.setProperty('--playerTop', playerTop + '%');
-          verticalGrid[(playerTop - 1) / 2][(playerLeft + 1) / 2] = 1;
-          let idToFind = "#v" + ((playerTop - 1) / 2) + "_" + ((playerLeft + 1) / 2);
-          const divFound = document.querySelector(idToFind).style;
-          divFound.setProperty('opacity', '1');
+          if((validity == 1) || (validity == 2)) {
+            verticalGrid[(playerTop - 1) / 2][(playerLeft + 1) / 2] = 1;
+            let idToFind = "#v" + ((playerTop - 1) / 2) + "_" + ((playerLeft + 1) / 2);
+            const divFound = document.querySelector(idToFind).style;
+            divFound.setProperty('opacity', '1');
+            if(validity == 2) {
+              finishBlock();
+            }
+          }
         }
         break;
 
@@ -207,120 +238,439 @@ function isValid(direction) {
     case "right":
       if(playerLeft < 99) {
         if(horizontalGrid[(playerLeft + 1) / 2][(playerTop + 1) / 2] == 1) {
-          return false;
+          return 0;
+        } else if(horizontalGrid[(playerLeft + 1) / 2][(playerTop + 1) / 2] == 2) {
+          return 3;
         } else {
+          let twoFound = false;
           if(playerLeft < 97) {
             if(horizontalGrid[(playerLeft + 3) / 2][(playerTop + 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(horizontalGrid[(playerLeft + 3) / 2][(playerTop + 1) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerTop > -1) {
             if(verticalGrid[(playerTop - 1) / 2][(playerLeft + 3) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(verticalGrid[(playerTop - 1) / 2][(playerLeft + 3) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerTop < 99) {
             if(verticalGrid[(playerTop + 1) / 2][(playerLeft + 3) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(verticalGrid[(playerTop + 1) / 2][(playerLeft + 3) / 2] == 2) {
+              return 2;
             }
           }
 
-          return true;
+          if(twoFound) {
+            return 2;
+          } else {
+            return 1;
+          }
         }
       } else {
-        return false;
+        return 0;
       }
     case "left":
       if(playerLeft > -1) {
         if(horizontalGrid[(playerLeft - 1) / 2][(playerTop + 1) / 2] == 1) {
-          return false;
+          return 0;
+        } else if(horizontalGrid[(playerLeft - 1) / 2][(playerTop + 1) / 2] == 2) {
+          return 3;
         } else {
+          let twoFound = false;
           if(playerLeft > 1) {
             if(horizontalGrid[(playerLeft - 3) / 2][(playerTop + 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(horizontalGrid[(playerLeft - 3) / 2][(playerTop + 1) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerTop > -1) {
             if(verticalGrid[(playerTop - 1) / 2][(playerLeft - 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(verticalGrid[(playerTop - 1) / 2][(playerLeft - 1) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerTop < 99) {
             if(verticalGrid[(playerTop + 1) / 2][(playerLeft - 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(verticalGrid[(playerTop + 1) / 2][(playerLeft - 1) / 2] == 2) {
+              return 2;
             }
           }
 
-          return true;
+          if(twoFound) {
+            return 2;
+          } else {
+            return 1;
+          }
         }
       } else {
-        return false;
+        return 0;
       }
       break;
     case "up":
       if(playerTop > -1) {
         if(verticalGrid[(playerTop - 1) / 2][(playerLeft + 1) / 2] == 1) {
-          return false;
+          return 0;
+        } else if(verticalGrid[(playerTop - 1) / 2][(playerLeft + 1) / 2] == 2) {
+          return 3;
         } else {
+          let twoFound = false;
           if(playerTop > 1) {
             if(verticalGrid[(playerTop - 3) / 2][(playerLeft + 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(verticalGrid[(playerTop - 3) / 2][(playerLeft + 1) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerLeft > -1) {
             if(horizontalGrid[(playerLeft - 1) / 2][(playerTop - 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(horizontalGrid[(playerLeft - 1) / 2][(playerTop - 1) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerLeft < 99) {
             if(horizontalGrid[(playerLeft + 1) / 2][(playerTop - 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(horizontalGrid[(playerLeft + 1) / 2][(playerTop - 1) / 2] == 2) {
+              return 2;
             }
           }
 
-          return true;
+          if(twoFound) {
+            return 2;
+          } else {
+            return 1;
+          }
         }
       } else {
-        return false;
+        return 0;
       }
       break;
     case "down":
       if(playerTop < 99) {
         if(verticalGrid[(playerTop + 1) / 2][(playerLeft + 1) / 2] == 1) {
-          return false;
+          return 0;
+        } else if(verticalGrid[(playerTop + 1) / 2][(playerLeft + 1) / 2] == 2) {
+          return 3;
         } else {
+          let twoFound = false;
           if(playerTop < 97) {
             if(verticalGrid[(playerTop + 3) / 2][(playerLeft + 1) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(verticalGrid[(playerTop + 3) / 2][(playerLeft + 1) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerLeft > -1) {
             if(horizontalGrid[([playerLeft] - 1) / 2][(playerTop + 3) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(horizontalGrid[([playerLeft] - 1) / 2][(playerTop + 3) / 2] == 2) {
+              twoFound = true;
             }
           }
 
           if(playerLeft < 99) {
             if(horizontalGrid[(playerLeft + 1) / 2][(playerTop + 3) / 2] == 1) {
-              return false;
+              return 0;
+            } else if(horizontalGrid[(playerLeft + 1) / 2][(playerTop + 3) / 2] == 2) {
+              return 2;
             }
           }
 
-          return true;
+          if(twoFound) {
+            return 2;
+          } else {
+            return 1;
+          }
         }
       } else {
-        return false;
+        return 0;
       }
       break;
     default:
   }
+}
+
+
+var currentLeft;
+var currentTop;
+var shape;
+function finishBlock() {
+  pauseGerms();
+  started = false;
+
+  let initialLeft = playerLeft;
+  let initialTop = playerTop;
+  currentLeft = playerLeft;
+  currentTop = playerTop;
+  let lastDirection = "none";
+  var firstDirection = "none";
+  shape = (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+  let finished = false;
+
+  for (let [i, germ] of Germs.entries()) {
+    coverGrid[germ.left / 2][germ.top / 2] = -1;
+    coverGrid[(germ.left + 2) / 2][germ.top / 2] = -1;
+    coverGrid[germ.left / 2][(germ.top + 2) / 2] = -1;
+    coverGrid[(germ.left + 2) / 2][(germ.top + 2) / 2] = -1;
+  }
+
+  for(;;) {
+    for(;;) { //search the four, finding the next red line and turning it brown
+      if(currentLeft < 99) {
+        if(horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] == 1) {
+          horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] = 3;
+          let idToFind = "#h" + ((currentLeft + 1) / 2) + "_" + ((currentTop + 1) / 2);
+          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+          currentLeft = currentLeft + 2;
+          lastDirection = "right";
+          if(firstDirection == "none") {
+            firstDirection = "right";
+          }
+          shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+          break;
+        }
+      }
+
+      if(currentTop < 99) {
+        if(verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] == 1) {
+          verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] = 3;
+          let idToFind = "#v" + ((currentTop + 1) / 2) + "_" + ((currentLeft + 1) / 2);
+          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+          currentTop = currentTop + 2;
+          lastDirection = "down";
+          if(firstDirection == "none") {
+            firstDirection = "down";
+          }
+          shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+          break;
+        }
+      }
+
+      if(currentLeft > -1) {
+        if(horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] == 1) {
+          horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] = 3;
+          let idToFind = "#h" + ((currentLeft - 1) / 2) + "_" + ((currentTop + 1) / 2);
+          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+          currentLeft = currentLeft - 2;
+          lastDirection = "left";
+          if(firstDirection == "none") {
+            firstDirection = "left";
+          }
+          shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+          break;
+        }
+      }
+
+      if(currentTop > -1) {
+        if(verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] == 1) {
+          verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] = 3;
+          let idToFind = "#v" + ((currentTop - 1) / 2) + "_" + ((currentLeft + 1) / 2);
+          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+          currentTop = currentTop - 2;
+          lastDirection = "up";
+          if(firstDirection == "none") {
+            firstDirection = "up";
+          }
+          shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+          break;
+        }
+      }
+
+      var currentEdge = getCurrentToEdge(firstDirection);
+      var initialEdge = getInitialToEdge(firstDirection);
+
+      finished = true;
+      break;
+    }
+
+    if(finished) {
+      
+      break;
+    }
+
+    if(firstDirection == "right") {
+      if(lastDirection == "right") {
+        for(let i = ((currentTop + 1) / 2); i <= 49; i++) {
+          if(i != ((currentTop + 1) / 2)) {
+            if((horizontalGrid[(currentLeft - 1) / 2][i] == 3) || (horizontalGrid[(currentLeft - 1) / 2][i] == 1)) {
+              break;
+            }
+          }
+
+          if(coverGrid[(currentLeft - 1) / 2][i] == 0) {
+            coverGrid[(currentLeft - 1) / 2][i] = 2;
+          } else if(coverGrid[(currentLeft - 1) / 2][i] == -1) {
+            //HIT GERM
+          }
+        }
+      }
+    } else if(firstDirection == "left") {
+      if(lastDirection == "left") {
+        for(let i = ((currentTop + 1) / 2); i <= 49; i++) {
+          if(i != ((currentTop + 1) / 2)) {
+            if((horizontalGrid[(currentLeft + 1) / 2][i] == 3) || (horizontalGrid[(currentLeft + 1) / 2][i] == 1)) { //error HERE
+              break;
+            }
+          }
+
+          if(coverGrid[(currentLeft + 1) / 2][i] == 0) {
+            coverGrid[(currentLeft + 1) / 2][i] = 2;
+          } else if(coverGrid[(currentLeft + 1) / 2][i] == -1) {
+            //HIT GERM
+          }
+        }
+      }
+    } else if(firstDirection == "up") {
+      if(lastDirection == "up") {
+        for(let i = ((currentLeft + 1) / 2); i <= 49; i++) {
+          if(i != ((currentLeft + 1) / 2)) {
+            if((verticalGrid[(currentTop + 1) / 2][i] == 3)  || (verticalGrid[(currentTop + 1) / 2][i] == 1)) {
+              break;
+            }
+          }
+
+          if(coverGrid[i][(currentTop + 1) / 2] == 0) {
+            coverGrid[i][(currentTop + 1) / 2] = 2;
+          } else if(coverGrid[(currentLeft + 1) / 2][i] == -1) {
+            //HIT GERM
+          }
+        }
+      }
+    } else {  //down
+      if(lastDirection == "down") {
+        for(let i = ((currentLeft + 1) / 2); i <= 49; i++) {
+          if(i != ((currentLeft + 1) / 2)) {
+            if((verticalGrid[(currentTop - 1) / 2][i] == 3) || (verticalGrid[(currentTop - 1) / 2][i] == 1)) {
+              break;
+            }
+          }
+
+          if(coverGrid[i][(currentTop - 1) / 2] == 0) {
+            coverGrid[i][(currentTop - 1) / 2] = 2;
+          } else if(coverGrid[i][(currentTop - 1) / 2] == -1) {
+            //HIT GERM
+          }
+        }
+      }
+    }
+
+  }
+
+  newDiv = document.createElement('div');
+  newDiv.style.setProperty('clip-path', 'polygon(' + shape + ')');
+  newDiv.style.setProperty('background-color', '#bf7e34');
+  newDiv.style.setProperty('width', '100%');
+  newDiv.style.setProperty('height', '100%');
+  newDiv.style.setProperty('top', '0');
+  newDiv.style.setProperty('left', '0');
+  newDiv.style.setProperty('position', 'absolute');
+  
+  document.querySelector("#gridContainer").appendChild(newDiv);
+  
+  moveGerms();
+}
+
+function getCurrentToEdge(firstDirection) {
+  if(currentLeft == -1) {
+    return "left";
+  }
+
+  if(currentLeft == 99) {
+    return "right";
+  }
+
+  if(currentTop == -1) {
+    return "top";
+  }
+
+  if(currentTop == 99) {
+    return "bottom";
+  }
+
+  /*for(;;) { //search the four, finding the next red line and turning it brown
+    if(currentLeft < 99) {
+      if(horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] == 1) {
+        horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] = 3;
+        let idToFind = "#h" + ((currentLeft + 1) / 2) + "_" + ((currentTop + 1) / 2);
+        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+        currentLeft = currentLeft + 2;
+        lastDirection = "right";
+        if(firstDirection == "none") {
+          firstDirection = "right";
+        }
+        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      }
+    }
+
+    if(currentTop < 99) {
+      if(verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] == 1) {
+        verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] = 3;
+        let idToFind = "#v" + ((currentTop + 1) / 2) + "_" + ((currentLeft + 1) / 2);
+        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+        currentTop = currentTop + 2;
+        lastDirection = "down";
+        if(firstDirection == "none") {
+          firstDirection = "down";
+        }
+        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      }
+    }
+
+    if(currentLeft > -1) {
+      if(horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] == 1) {
+        horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] = 3;
+        let idToFind = "#h" + ((currentLeft - 1) / 2) + "_" + ((currentTop + 1) / 2);
+        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+        currentLeft = currentLeft - 2;
+        lastDirection = "left";
+        if(firstDirection == "none") {
+          firstDirection = "left";
+        }
+        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      }
+    }
+
+    if(currentTop > -1) {
+      if(verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] == 1) {
+        verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] = 3;
+        let idToFind = "#v" + ((currentTop - 1) / 2) + "_" + ((currentLeft + 1) / 2);
+        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
+        currentTop = currentTop - 2;
+        lastDirection = "up";
+        if(firstDirection == "none") {
+          firstDirection = "up";
+        }
+        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      }
+    }
+
+    finished = true;
+    break;
+  }*/
+}
+
+function getInitialToEdge(firstDirection) {
+
 }
 
 function keepTime() {
@@ -389,6 +739,21 @@ function gameOver() {
 }
 
 function restartGame() {
+  for(let i = 0; i < 50; i++) {
+    for(let j = 0; j < 51; j++) {
+      if(horizontalGrid[i][j] == 1) {
+        horizontalGrid[i][j] = 0;
+        let idToFind = "#h" + i + "_" + j;
+        document.querySelector(idToFind).style.setProperty('opacity', '0');
+      }
+      if(verticalGrid[i][j] == 1) {
+        verticalGrid[i][j] = 0;
+        let idToFind = "#v" + i + "_" + j;
+        document.querySelector(idToFind).style.setProperty('opacity', '0');
+      }
+    }
+  }
+
   horizontalGrid.length = 0;
   verticalGrid.length = 0;
   timeLeft = 120;

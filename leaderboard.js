@@ -1,5 +1,5 @@
 function loadScores() {
-  /*let scores = [];
+  let scores = [];
   const scoresFromStorage = localStorage.getItem("scores");
   if(scoresFromStorage) {
     scores = JSON.parse(scoresFromStorage);
@@ -15,12 +15,24 @@ function loadScores() {
       const timeElement = document.createElement('td');
       const dateElement = document.createElement('td');
       
-      /////Finish me!//////
+      positionElement.textContent = i + 1;
+      nameElement.textContent = score.name;
+      levelElement.textContent = score.level;
+      timeElement.textContent = score.time;
+      dateElement.textContent = score.date;
+
+      const rowElement = document.createElement('tr');
+      rowElement.appendChild(positionElement);
+      rowElement.appendChild(nameElement);
+      rowElement.appendChild(levelElement);
+      rowElement.appendChild(timeElement);
+      rowElement.appendChild(dateElement);
+
+      tableBodyElement.appendChild(rowElement);
     }
   } else {
     document.querySelector("#scoresTableHead").innerHTML = '<div id="noScoresMessage">Play first to start the leaderboard!</div>';
-    //BodyElement.innerHTML = '<div id="noScoresMessage"></div>';
-  }*/
+  }
 }
 
 loadScores();
