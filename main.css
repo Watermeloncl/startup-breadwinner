@@ -191,6 +191,20 @@ Play page
     flex-direction: column;
 }
 
+#levelUpBackground {
+    display: none;
+    flex-direction: column;
+    width: 20%;
+    height: 15%;
+    top: 42.5%;
+    left: 40%;
+}
+
+#congratsText {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 #pauseBackground {
     width: 15%;
     height: 15%;
@@ -217,6 +231,13 @@ Play page
     min-height: min-content;
     z-index: 11;
     margin: 5px;
+}
+
+#continueButton {
+    height: 25%;
+    min-height: min-content;
+    z-index: 11;
+    margin: 10px;
 }
 
 #playMain {
@@ -293,7 +314,7 @@ Play page
 }
 
 #gameContainer {
-    background-color: #e39b49;
+    background-color: #a36b2a;
     position: absolute;
     margin: 7px;
     z-index: 5;

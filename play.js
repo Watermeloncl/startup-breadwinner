@@ -15,6 +15,7 @@ var lives = 3;
 var timeLeft = 120;
 var frame = 0;
 var timeScore = 0;
+var coverage = 0;
 
 function setup(makeGrid) {
   let firstLeft = ((Math.floor(Math.random() * 47)) * 2) + 2;
@@ -100,7 +101,7 @@ function startGame() {
 }
 
 function moveGerms() {
-  timer = setInterval(move, 200);  //Change to an update/redraw function? //20
+  timer = setInterval(move, 30);  //Change to an update/redraw function? //20
   started = true;
 }
 
@@ -409,19 +410,30 @@ function isValid(direction) {
 
 var currentLeft;
 var currentTop;
+var initialLeft;
+var initialTop;
 var shape;
+var shape2;
+var lastDirection;
+var lastDirection2;
+var firstDirection;
+var turnRightGerm;
+var turnLeftGerm;
 function finishBlock() {
   pauseGerms();
   started = false;
 
-  let initialLeft = playerLeft;
-  let initialTop = playerTop;
+  initialLeft = playerLeft;
+  initialTop = playerTop;
   currentLeft = playerLeft;
   currentTop = playerTop;
-  let lastDirection = "none";
-  var firstDirection = "none";
+  lastDirection = "none";
+  firstDirection = "none";
   shape = (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+  //console.log("shape1: " + shape);
   let finished = false;
+  turnRightGerm = false;
+  turnLeftGerm = false;
 
   for (let [i, germ] of Germs.entries()) {
     coverGrid[germ.left / 2][germ.top / 2] = -1;
@@ -435,8 +447,6 @@ function finishBlock() {
       if(currentLeft < 99) {
         if(horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] == 1) {
           horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] = 3;
-          let idToFind = "#h" + ((currentLeft + 1) / 2) + "_" + ((currentTop + 1) / 2);
-          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
           currentLeft = currentLeft + 2;
           lastDirection = "right";
           if(firstDirection == "none") {
@@ -450,8 +460,6 @@ function finishBlock() {
       if(currentTop < 99) {
         if(verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] == 1) {
           verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] = 3;
-          let idToFind = "#v" + ((currentTop + 1) / 2) + "_" + ((currentLeft + 1) / 2);
-          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
           currentTop = currentTop + 2;
           lastDirection = "down";
           if(firstDirection == "none") {
@@ -465,8 +473,6 @@ function finishBlock() {
       if(currentLeft > -1) {
         if(horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] == 1) {
           horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] = 3;
-          let idToFind = "#h" + ((currentLeft - 1) / 2) + "_" + ((currentTop + 1) / 2);
-          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
           currentLeft = currentLeft - 2;
           lastDirection = "left";
           if(firstDirection == "none") {
@@ -480,8 +486,6 @@ function finishBlock() {
       if(currentTop > -1) {
         if(verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] == 1) {
           verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] = 3;
-          let idToFind = "#v" + ((currentTop - 1) / 2) + "_" + ((currentLeft + 1) / 2);
-          document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
           currentTop = currentTop - 2;
           lastDirection = "up";
           if(firstDirection == "none") {
@@ -492,185 +496,651 @@ function finishBlock() {
         }
       }
 
-      var currentEdge = getCurrentToEdge(firstDirection);
-      var initialEdge = getInitialToEdge(firstDirection);
+      finishShapeRight(); //shape 2 turns Right
+      finishShapeLeft();  //shape (1) turns Left
 
       finished = true;
       break;
     }
 
     if(finished) {
-      
       break;
     }
 
     if(firstDirection == "right") {
       if(lastDirection == "right") {
-        for(let i = ((currentTop + 1) / 2); i <= 49; i++) {
-          if(i != ((currentTop + 1) / 2)) {
-            if((horizontalGrid[(currentLeft - 1) / 2][i] == 3) || (horizontalGrid[(currentLeft - 1) / 2][i] == 1)) {
-              break;
-            }
-          }
-
-          if(coverGrid[(currentLeft - 1) / 2][i] == 0) {
-            coverGrid[(currentLeft - 1) / 2][i] = 2;
-          } else if(coverGrid[(currentLeft - 1) / 2][i] == -1) {
-            //HIT GERM
-          }
-        }
+        coverGridRight();
       }
     } else if(firstDirection == "left") {
       if(lastDirection == "left") {
-        for(let i = ((currentTop + 1) / 2); i <= 49; i++) {
-          if(i != ((currentTop + 1) / 2)) {
-            if((horizontalGrid[(currentLeft + 1) / 2][i] == 3) || (horizontalGrid[(currentLeft + 1) / 2][i] == 1)) { //error HERE
-              break;
-            }
-          }
-
-          if(coverGrid[(currentLeft + 1) / 2][i] == 0) {
-            coverGrid[(currentLeft + 1) / 2][i] = 2;
-          } else if(coverGrid[(currentLeft + 1) / 2][i] == -1) {
-            //HIT GERM
-          }
-        }
+        coverGridLeft();
       }
     } else if(firstDirection == "up") {
       if(lastDirection == "up") {
-        for(let i = ((currentLeft + 1) / 2); i <= 49; i++) {
-          if(i != ((currentLeft + 1) / 2)) {
-            if((verticalGrid[(currentTop + 1) / 2][i] == 3)  || (verticalGrid[(currentTop + 1) / 2][i] == 1)) {
-              break;
-            }
-          }
+        coverGridUp();
+      }
+    } else {
+      if(lastDirection == "down") {
+        coverGridDown();
+      }
+    }
+  }
 
-          if(coverGrid[i][(currentTop + 1) / 2] == 0) {
-            coverGrid[i][(currentTop + 1) / 2] = 2;
-          } else if(coverGrid[(currentLeft + 1) / 2][i] == -1) {
-            //HIT GERM
-          }
+  if(!turnLeftGerm) {
+    newDiv1 = document.createElement('div');
+    newDiv1.style.setProperty('clip-path', 'polygon(' + shape + ')');
+    newDiv1.style.setProperty('background-color', '#bf7e34');
+    newDiv1.style.setProperty('width', '100%');
+    newDiv1.style.setProperty('height', '100%');
+    newDiv1.style.setProperty('top', '0');
+    newDiv1.style.setProperty('left', '0');
+    newDiv1.style.setProperty('position', 'absolute');
+    document.querySelector("#gridContainer").appendChild(newDiv1);
+  }
+
+  if(!turnRightGerm) {
+    newDiv2 = document.createElement('div');
+    newDiv2.style.setProperty('clip-path', 'polygon(' + shape2 + ')');
+    newDiv2.style.setProperty('background-color', '#bf7e34');
+    newDiv2.style.setProperty('width', '100%');
+    newDiv2.style.setProperty('height', '100%');
+    newDiv2.style.setProperty('top', '0');
+    newDiv2.style.setProperty('left', '0');
+    newDiv2.style.setProperty('position', 'absolute');
+    document.querySelector("#gridContainer").appendChild(newDiv2);
+  }
+  
+
+  for(let i = 0; i < 50; i++) {
+    for(let j = 0; j < 51; j++) {
+      if(horizontalGrid[i][j] == 3) {
+        horizontalGrid[i][j] = 2;
+        if((j > 0) && (j < 50)) {
+          let idToFind = "#h" + i + "_" + j;
+          document.querySelector(idToFind).style.setProperty('background-color', '#522c00');
         }
       }
-    } else {  //down
-      if(lastDirection == "down") {
-        for(let i = ((currentLeft + 1) / 2); i <= 49; i++) {
-          if(i != ((currentLeft + 1) / 2)) {
-            if((verticalGrid[(currentTop - 1) / 2][i] == 3) || (verticalGrid[(currentTop - 1) / 2][i] == 1)) {
-              break;
-            }
-          }
-
-          if(coverGrid[i][(currentTop - 1) / 2] == 0) {
-            coverGrid[i][(currentTop - 1) / 2] = 2;
-          } else if(coverGrid[i][(currentTop - 1) / 2] == -1) {
-            //HIT GERM
-          }
+      if(verticalGrid[i][j] == 3) {
+        verticalGrid[i][j] = 2;
+        if((j > 0) && (j < 50)) {
+          let idToFind = "#v" + i + "_" + j;
+          document.querySelector(idToFind).style.setProperty('background-color', '#522c00');
         }
       }
     }
-
   }
 
-  newDiv = document.createElement('div');
-  newDiv.style.setProperty('clip-path', 'polygon(' + shape + ')');
-  newDiv.style.setProperty('background-color', '#bf7e34');
-  newDiv.style.setProperty('width', '100%');
-  newDiv.style.setProperty('height', '100%');
-  newDiv.style.setProperty('top', '0');
-  newDiv.style.setProperty('left', '0');
-  newDiv.style.setProperty('position', 'absolute');
+  let currentTaken = coverage;
+  for(let i = 0; i < 50; i++) {
+    for(let j = 0; j < 50; j++) {
+      if(coverGrid[i][j] == 2) {
+        if(turnLeftGerm) {
+          coverGrid[i][j] = 0;
+        } else {
+          coverGrid[i][j] = 1;
+          currentTaken++;
+          horizontalGrid[i][j] = 2;
+          horizontalGrid[i][j + 1] = 2;
+          verticalGrid[j][i] = 2;
+          verticalGrid[j][i + 1] = 2;
+        }
+      } else if(coverGrid[i][j] == 3) {
+        if(turnRightGerm) {
+          coverGrid[i][j] = 0;
+        } else {
+          coverGrid[i][j] = 1;
+          currentTaken++;
+          horizontalGrid[i][j] = 2;
+          horizontalGrid[i][j + 1] = 2;
+          verticalGrid[j][i] = 2;
+          verticalGrid[j][i + 1] = 2;
+        }
+      } else if(coverGrid[i][j] == -1) {
+        coverGrid[i][j] = 0;
+      }
+    }
+  }
+
+  if(coverage != currentTaken) {
+    coverage = currentTaken;
+    document.querySelector("#coverageText").textContent = "◕: " + ((coverage / 2500) * 100).toFixed(1) + "%";
+    //document.querySelector("#coverageText").style.setProperty('color', 'red');
+  }
   
-  document.querySelector("#gridContainer").appendChild(newDiv);
+
   
-  moveGerms();
+  if(coverage >= 2000) {
+    levelUp();
+  } else {
+    moveGerms();
+  }
 }
 
-function getCurrentToEdge(firstDirection) {
-  if(currentLeft == -1) {
-    return "left";
-  }
+function finishShapeLeft() {
+  let right;
+  let left;
+  let up;
+  let down;
+  for(;;) {
+    if((currentLeft == initialLeft) && (currentTop == initialTop)) {
+      break;
+    }
 
-  if(currentLeft == 99) {
-    return "right";
-  }
-
-  if(currentTop == -1) {
-    return "top";
-  }
-
-  if(currentTop == 99) {
-    return "bottom";
-  }
-
-  /*for(;;) { //search the four, finding the next red line and turning it brown
     if(currentLeft < 99) {
-      if(horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] == 1) {
-        horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] = 3;
-        let idToFind = "#h" + ((currentLeft + 1) / 2) + "_" + ((currentTop + 1) / 2);
-        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
-        currentLeft = currentLeft + 2;
-        lastDirection = "right";
-        if(firstDirection == "none") {
-          firstDirection = "right";
-        }
-        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
-        break;
-      }
+      right = horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2];
+    } else {
+      right = 3;
     }
-
-    if(currentTop < 99) {
-      if(verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] == 1) {
-        verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] = 3;
-        let idToFind = "#v" + ((currentTop + 1) / 2) + "_" + ((currentLeft + 1) / 2);
-        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
-        currentTop = currentTop + 2;
-        lastDirection = "down";
-        if(firstDirection == "none") {
-          firstDirection = "down";
-        }
-        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
-        break;
-      }
-    }
-
+    
     if(currentLeft > -1) {
-      if(horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] == 1) {
-        horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] = 3;
-        let idToFind = "#h" + ((currentLeft - 1) / 2) + "_" + ((currentTop + 1) / 2);
-        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
-        currentLeft = currentLeft - 2;
-        lastDirection = "left";
-        if(firstDirection == "none") {
-          firstDirection = "left";
-        }
-        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
-        break;
-      }
+      left = horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2];
+    } else {
+      left = 3;
     }
 
     if(currentTop > -1) {
-      if(verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] == 1) {
-        verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] = 3;
-        let idToFind = "#v" + ((currentTop - 1) / 2) + "_" + ((currentLeft + 1) / 2);
-        document.querySelector(idToFind).style.setProperty('background-color', '#bf7e34');
-        currentTop = currentTop - 2;
-        lastDirection = "up";
-        if(firstDirection == "none") {
-          firstDirection = "up";
+      up = verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2];
+    } else {
+      up = 3;
+    }
+    
+    if(currentTop < 99) {
+      down = verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2];
+    } else {
+      down = 3;
+    }
+
+    switch(lastDirection) {
+      case "right":
+        if(up == 2) {
+          verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] = 3;
+          currentTop = currentTop - 2;
+          lastDirection = "up";
+          if(firstDirection == "up") {
+            coverGridUp();
+          }
+        } else if(right == 2) {
+          horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] = 3;
+          currentLeft = currentLeft + 2;
+          lastDirection = "right";
+          if(firstDirection == "right") {
+            coverGridRight();
+          }
+        } else if(down == 2) {
+          verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] = 3;
+          currentTop = currentTop + 2;
+          lastDirection = "down";
+          if(firstDirection == "down") {
+            coverGridDown();
+          }
         }
         shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      case "left":
+        if(down == 2) {
+          verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] = 3;
+          currentTop = currentTop + 2;
+          lastDirection = "down";
+          if(firstDirection == "down") {
+            coverGridDown();
+          }
+        } else if(left == 2) {
+          horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] = 3;
+          currentLeft = currentLeft - 2;
+          lastDirection = "left";
+          if(firstDirection == "left") {
+            coverGridLeft();
+          }
+        } else if(up == 2) {
+          verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] = 3;
+          currentTop = currentTop - 2;
+          lastDirection = "up";
+          if(firstDirection == "up") {
+            coverGridUp();
+          }
+        }
+        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      case "up":
+        if(left == 2) {
+          horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] = 3;
+          currentLeft = currentLeft - 2;
+          lastDirection = "left";
+          if(firstDirection == "left") {
+            coverGridLeft();
+          }
+        } else if(up == 2) {
+          verticalGrid[(currentTop - 1) / 2][(currentLeft + 1) / 2] = 3;
+          currentTop = currentTop - 2;
+          lastDirection = "up";
+          if(firstDirection == "up") {
+            coverGridUp();
+          }
+        } else if(right == 2) {
+          horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] = 3;
+          currentLeft = currentLeft + 2;
+          lastDirection = "right";
+          if(firstDirection == "right") {
+            coverGridRight();
+          }
+        }
+        
+        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      case "down":
+        if(right == 2) {
+          horizontalGrid[(currentLeft + 1) / 2][(currentTop + 1) / 2] = 3;
+          currentLeft = currentLeft + 2;
+          lastDirection = "right";
+          if(firstDirection == "right") {
+            coverGridRight();
+          }
+        } else if(down == 2) {
+          verticalGrid[(currentTop + 1) / 2][(currentLeft + 1) / 2] = 3;
+          currentTop = currentTop + 2;
+          lastDirection = "down";
+          if(firstDirection == "down") {
+            coverGridDown();
+          }
+        } else if(left == 2) {
+          horizontalGrid[(currentLeft - 1) / 2][(currentTop + 1) / 2] = 3;
+          currentLeft = currentLeft - 2;
+          lastDirection = "left";
+          if(firstDirection == "left") {
+            coverGridLeft();
+          }
+        }
+        shape = shape + ", " + (currentLeft + 1) + "% " + (currentTop + 1) + "%";
+        break;
+      default:
+    }
+  }
+}
+
+var currentTop2;
+var currentLeft2;
+function finishShapeRight() {
+  lastDirection2 = lastDirection;
+  shape2 = shape;
+  currentLeft2 = currentLeft;
+  currentTop2 = currentTop;
+  let right;
+  let left;
+  let up;
+  let down;
+  for(;;) {
+    if((currentLeft2 == initialLeft) && (currentTop2 == initialTop)) {
+      break;
+    }
+
+    if(currentLeft2 < 99) {
+      right = horizontalGrid[(currentLeft2 + 1) / 2][(currentTop2 + 1) / 2];
+    } else {
+      right = 3;
+    }
+    
+    if(currentLeft2 > -1) {
+      left = horizontalGrid[(currentLeft2 - 1) / 2][(currentTop2 + 1) / 2];
+    } else {
+      left = 3;
+    }
+
+    if(currentTop2 > -1) {
+      up = verticalGrid[(currentTop2 - 1) / 2][(currentLeft2 + 1) / 2];
+    } else {
+      up = 3;
+    }
+    
+    if(currentTop2 < 99) {
+      down = verticalGrid[(currentTop2 + 1) / 2][(currentLeft2 + 1) / 2];
+    } else {
+      down = 3;
+    }
+
+    switch(lastDirection2) {
+      case "right":
+        if(down == 2) {
+          verticalGrid[(currentTop2 + 1) / 2][(currentLeft2 + 1) / 2] = 3;
+          currentTop2 = currentTop2 + 2;
+          lastDirection2 = "down";
+          if(firstDirection == "down") {
+            coverGridDown2();
+          }
+        } else if(right == 2) {
+          horizontalGrid[(currentLeft2 + 1) / 2][(currentTop2 + 1) / 2] = 3;
+          currentLeft2 = currentLeft2 + 2;
+          lastDirection2 = "right";
+          if(firstDirection == "right") {
+            coverGridRight2();
+          }
+        } else if(up == 2) {
+          verticalGrid[(currentTop2 - 1) / 2][(currentLeft2 + 1) / 2] = 3;
+          currentTop2 = currentTop2 - 2;
+          lastDirection2 = "up";
+          if(firstDirection == "up") {
+            coverGridUp2();
+          }
+        }
+        shape2 = shape2 + ", " + (currentLeft2 + 1) + "% " + (currentTop2 + 1) + "%";
+        break;
+      case "left":
+        if(up == 2) {
+          verticalGrid[(currentTop2 - 1) / 2][(currentLeft2 + 1) / 2] = 3;
+          currentTop2 = currentTop2 - 2;
+          lastDirection2 = "up";
+          if(firstDirection == "up") {
+            coverGridUp2();
+          }
+        } else if(left == 2) {
+          horizontalGrid[(currentLeft2 - 1) / 2][(currentTop2 + 1) / 2] = 3;
+          currentLeft2 = currentLeft2 - 2;
+          lastDirection2 = "left";
+          if(firstDirection == "left") {
+            coverGridLeft2();
+          }
+        } else if(down == 2) {
+          verticalGrid[(currentTop2 + 1) / 2][(currentLeft2 + 1) / 2] = 3;
+          currentTop2 = currentTop2 + 2;
+          lastDirection2 = "down";
+          if(firstDirection == "down") {
+            coverGridDown2();
+          }
+        }
+        shape2 = shape2 + ", " + (currentLeft2 + 1) + "% " + (currentTop2 + 1) + "%";
+        break;
+      case "up":
+        if(right == 2) {
+          horizontalGrid[(currentLeft2 + 1) / 2][(currentTop2 + 1) / 2] = 3;
+          currentLeft2 = currentLeft2 + 2;
+          lastDirection2 = "right";
+          if(firstDirection == "right") {
+            coverGridRight2();
+          }
+        } else if(up == 2) {
+          verticalGrid[(currentTop2 - 1) / 2][(currentLeft2 + 1) / 2] = 3;
+          currentTop2 = currentTop2 - 2;
+          lastDirection2 = "up";
+          if(firstDirection == "up") {
+            coverGridUp2();
+          }
+        } else if(left == 2) {
+          horizontalGrid[(currentLeft2 - 1) / 2][(currentTop2 + 1) / 2] = 3;
+          currentLeft2 = currentLeft2 - 2;
+          lastDirection2 = "left";
+          if(firstDirection == "left") {
+            coverGridLeft2();
+          }
+        }
+        shape2 = shape2 + ", " + (currentLeft2 + 1) + "% " + (currentTop2 + 1) + "%";
+        break;
+      case "down":
+        if(left == 2) {
+          horizontalGrid[(currentLeft2 - 1) / 2][(currentTop2 + 1) / 2] = 3;
+          currentLeft2 = currentLeft2 - 2;
+          lastDirection2 = "left";
+          if(firstDirection == "left") {
+            coverGridLeft2();
+          }
+        } else if(down == 2) {
+          verticalGrid[(currentTop2 + 1) / 2][(currentLeft2 + 1) / 2] = 3;
+          currentTop2 = currentTop2 + 2;
+          lastDirection2 = "down";
+          if(firstDirection == "down") {
+            coverGridDown2();
+          }
+        } else if(right == 2) {
+          horizontalGrid[(currentLeft2 + 1) / 2][(currentTop2 + 1) / 2] = 3;
+          currentLeft2 = currentLeft2 + 2;
+          lastDirection2 = "right";
+          if(firstDirection == "right") {
+            coverGridRight2();
+          }
+        }
+        shape2 = shape2 + ", " + (currentLeft2 + 1) + "% " + (currentTop2 + 1) + "%";
+        break;
+      default:
+    }
+  }
+}
+
+function coverGridRight() {
+  for(let i = ((currentTop + 1) / 2); i <= 49; i++) {
+    if(i != ((currentTop + 1) / 2)) {
+      if(horizontalGrid[(currentLeft - 1) / 2][i] != 0) {
         break;
       }
     }
 
-    finished = true;
-    break;
-  }*/
+    if(coverGrid[(currentLeft - 1) / 2][i] == 0) {
+      coverGrid[(currentLeft - 1) / 2][i] = 3;
+    } else if(coverGrid[(currentLeft - 1) / 2][i] == -1) {
+      turnRightGerm = true;
+    }
+  }
+
+  for(let i = ((currentTop - 1) / 2); i >= 0; i--) {
+    if(i != ((currentTop - 1) / 2)) {
+      if(horizontalGrid[(currentLeft - 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[(currentLeft - 1) / 2][i] == 0) {
+      coverGrid[(currentLeft - 1) / 2][i] = 2;
+    } else if(coverGrid[(currentLeft - 1) / 2][i] == -1) {
+      turnLeftGerm = true;
+    }
+  }
 }
 
-function getInitialToEdge(firstDirection) {
+function coverGridLeft() {
+  for(let i = ((currentTop + 1) / 2); i <= 49; i++) {
+    if(i != ((currentTop + 1) / 2)) {
+      if(horizontalGrid[(currentLeft + 1) / 2][i] != 0) {
+        break;
+      }
+    }
 
+    if(coverGrid[(currentLeft + 1) / 2][i] == 0) {
+      coverGrid[(currentLeft + 1) / 2][i] = 2;
+    } else if(coverGrid[(currentLeft + 1) / 2][i] == -1) {
+      turnLeftGerm = true;
+    }
+  }
+
+  for(let i = ((currentTop - 1) / 2); i >= 0; i--) {
+    if(i != ((currentTop - 1) / 2)) {
+      if(horizontalGrid[(currentLeft + 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[(currentLeft + 1) / 2][i] == 0) {
+      coverGrid[(currentLeft + 1) / 2][i] = 3;
+    } else if(coverGrid[(currentLeft + 1) / 2][i] == -1) {
+      turnRightGerm = true;
+    }
+  }
+}
+
+function coverGridUp() {
+  for(let i = ((currentLeft + 1) / 2); i <= 49; i++) {
+    if(i != ((currentLeft + 1) / 2)) {
+      if(verticalGrid[(currentTop + 1) / 2][i] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop + 1) / 2] == 0) {
+      coverGrid[i][(currentTop + 1) / 2] = 3;
+    } else if(coverGrid[i][(currentTop + 1) / 2] == -1) {
+      turnRightGerm = true;
+    }
+  }
+
+  for(let i = ((currentLeft - 1) / 2); i >= 0; i--) {
+    if(i != ((currentLeft - 1) / 2)) {
+      if(verticalGrid[(currentTop + 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop + 1) / 2] == 0) {
+      coverGrid[i][(currentTop + 1) / 2] = 2;
+    } else if(coverGrid[i][(currentTop + 1) / 2] == -1) {
+      turnLeftGerm = true;
+    }
+  }
+}
+
+function coverGridDown() {
+  for(let i = ((currentLeft + 1) / 2); i <= 49; i++) {
+    if(i != ((currentLeft + 1) / 2)) {
+      if(verticalGrid[(currentTop - 1) / 2][i] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop - 1) / 2] == 0) {
+      coverGrid[i][(currentTop - 1) / 2] = 2;
+    } else if(coverGrid[i][(currentTop - 1) / 2] == -1) {
+      turnLeftGerm = true;
+    }
+  }
+
+  for(let i = ((currentLeft - 1) / 2); i >= 0; i--) {
+    if(i != ((currentLeft - 1) / 2)) {
+      if(verticalGrid[(currentTop - 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop - 1) / 2] == 0) {
+      coverGrid[i][(currentTop - 1) / 2] = 3;
+    } else if(coverGrid[i][(currentTop - 1) / 2] == -1) {
+      turnRightGerm = true;
+    }
+  }
+}
+
+function coverGridRight2() {
+  for(let i = ((currentTop2 + 1) / 2); i <= 49; i++) {
+    if(i != ((currentTop2 + 1) / 2)) {
+      if(horizontalGrid[(currentLeft2 - 1) / 2][i] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[(currentLeft2 - 1) / 2][i] == 0) {
+      coverGrid[(currentLeft2 - 1) / 2][i] = 3;
+    } else if(coverGrid[(currentLeft2 - 1) / 2][i] == -1) {
+      turnRightGerm = true;
+    }
+  }
+
+  for(let i = ((currentTop2 - 1) / 2); i >= 0; i--) {
+    if(i != ((currentTop2 - 1) / 2)) {
+      if(horizontalGrid[(currentLeft2 - 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[(currentLeft2 - 1) / 2][i] == 0) {
+      coverGrid[(currentLeft2 - 1) / 2][i] = 2;
+    } else if(coverGrid[(currentLeft2 - 1) / 2][i] == -1) {
+      turnLeftGerm = true;
+    }
+  }
+}
+
+function coverGridLeft2() {
+  for(let i = ((currentTop2 + 1) / 2); i <= 49; i++) {
+    if(i != ((currentTop2 + 1) / 2)) {
+      if(horizontalGrid[(currentLeft2 + 1) / 2][i] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[(currentLeft2 + 1) / 2][i] == 0) {
+      coverGrid[(currentLeft2 + 1) / 2][i] = 2;
+    } else if(coverGrid[(currentLeft2 + 1) / 2][i] == -1) {
+      turnLeftGerm = true;
+    }
+  }
+
+  for(let i = ((currentTop2 - 1) / 2); i >= 0; i--) {
+    if(i != ((currentTop2 - 1) / 2)) {
+      if(horizontalGrid[(currentLeft2 + 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[(currentLeft2 + 1) / 2][i] == 0) {
+      coverGrid[(currentLeft2 + 1) / 2][i] = 3;
+    } else if(coverGrid[(currentLeft2 + 1) / 2][i] == -1) {
+      turnRightGerm = true;
+    }
+  }
+}
+
+function coverGridUp2() {
+  for(let i = ((currentLeft2 + 1) / 2); i <= 49; i++) {
+    if(i != ((currentLeft2 + 1) / 2)) {
+      if(verticalGrid[(currentTop2 + 1) / 2][i] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop2 + 1) / 2] == 0) {
+      coverGrid[i][(currentTop2 + 1) / 2] = 3;
+    } else if(coverGrid[i][(currentTop2 + 1) / 2] == -1) {
+      turnRightGerm = true;
+    }
+  }
+
+  for(let i = ((currentLeft2 - 1) / 2); i >= 0; i--) {
+    if(i != ((currentLeft2 - 1) / 2)) {
+      if(verticalGrid[(currentTop2 + 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop2 + 1) / 2] == 0) {
+      coverGrid[i][(currentTop2 + 1) / 2] = 2;
+    } else if(coverGrid[i][(currentTop2 + 1) / 2] == -1) {
+      turnLeftGerm = true;
+    }
+  }
+}
+
+function coverGridDown2() {
+  for(let i = ((currentLeft2 + 1) / 2); i <= 49; i++) {
+    if(i != ((currentLeft2 + 1) / 2)) {
+      if(verticalGrid[(currentTop2 - 1) / 2][i] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop2 - 1) / 2] == 0) {
+      coverGrid[i][(currentTop2 - 1) / 2] = 2;
+    } else if(coverGrid[i][(currentTop2 - 1) / 2] == -1) {
+      turnLeftGerm = true;
+    }
+  }
+
+  for(let i = ((currentLeft2 - 1) / 2); i >= 0; i--) {
+    if(i != ((currentLeft2 - 1) / 2)) {
+      if(verticalGrid[(currentTop2 - 1) / 2][i + 1] != 0) {
+        break;
+      }
+    }
+
+    if(coverGrid[i][(currentTop2 - 1) / 2] == 0) {
+      coverGrid[i][(currentTop2 - 1) / 2] = 3;
+    } else if(coverGrid[i][(currentTop2 - 1) / 2] == -1) {
+      turnRightGerm = true;
+    }
+  }
 }
 
 function keepTime() {
@@ -736,6 +1206,10 @@ function gameOver() {
   pauseable = false;
   document.querySelector("#endBackground").style.setProperty('display', 'flex');
   saveScore();
+}
+
+function levelUp() {
+  
 }
 
 function restartGame() {
