@@ -18,7 +18,14 @@ function loadScores() {
       positionElement.textContent = i + 1;
       nameElement.textContent = score.name;
       levelElement.textContent = score.level;
-      timeElement.textContent = score.time;
+      
+      timeScore = Math.floor((score.time / 60)) + ":";
+      if(score.time % 60 < 10) {
+        timeScore = timeScore + "0";
+      }
+      timeScore = timeScore + score.time % 60;
+
+      timeElement.textContent = timeScore;
       dateElement.textContent = score.date;
 
       const rowElement = document.createElement('tr');

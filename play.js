@@ -1,5 +1,9 @@
 var r = document.querySelector(':root');
 var s = r.style;
+
+const STARTING_TIME = 180;
+const STARTING_LIVES = 5;
+
 var playerLeft = -1;
 var playerTop = 99;
 var pauseable = false;
@@ -11,8 +15,8 @@ var verticalGrid = [];
 var coverGrid = [];
 var buttonPressed = false;
 var level = 1;
-var lives = 3;
-var timeLeft = 120;
+var lives = STARTING_LIVES;
+var timeLeft = STARTING_TIME;
 var frame = 0;
 var timeScore = 0;
 var coverage = 0;
@@ -24,6 +28,15 @@ function setup(makeGrid) {
   r.style.setProperty('--germ1Top', firstTop + '%');
 
   levelElement = document.querySelector("#levelText").textContent = "Level " + level;
+  levelElement = document.querySelector("#livesText").textContent = "❤:  " + lives;
+
+  let timeString = Math.floor(timeLeft / 60) + ":";
+  if(timeLeft % 60 < 10) {
+    timeString = timeString + "0";
+  }
+  timeString = timeString + (timeLeft % 60);
+
+  timeElement = document.querySelector("#timerText").textContent = timeString;
 
   const newGerm = {number: 1, left: firstLeft, top: firstTop, leftDirection: 2, topDirection: 2, flip: 1};
 
@@ -37,6 +50,8 @@ function setup(makeGrid) {
 }
 
 function createGridArray() {
+  horizontalGrid.length = 0;
+  verticalGrid.length = 0;
   for(let i = 0; i < 50; i++) {
     var newArrayH = [];
     var newArrayV = [];
@@ -54,6 +69,7 @@ function createGridArray() {
 }
 
 function createCoverArray() {
+  coverGrid.length = 0;
   for(let i = 0; i < 50; i++) {
     var newArrayH = [];
     newArrayH.length = 50;
@@ -116,7 +132,7 @@ function move() {
   let flipLeft;
   let gridValue;
   let gridValue2;
-  for (let [i, germ] of Germs.entries()) {
+  for (const [i, germ] of Germs.entries()) {
 
     //new rebound
     flipTop = 0;
@@ -153,8 +169,8 @@ function move() {
     germ.left = germ.left + germ.leftDirection;
     germ.top = germ.top + germ.topDirection;
 
-    s.setProperty("--germ" + germ.number + "Left", germ.left + '%');
-    s.setProperty("--germ" + germ.number + "Top", germ.top + '%');
+    document.querySelector("#germ" + germ.number).style.setProperty('left', germ.left + '%');
+    document.querySelector("#germ" + germ.number).style.setProperty('top', germ.top + '%');
   }
 }
 
@@ -535,7 +551,7 @@ function finishBlock() {
     newDiv1.style.setProperty('top', '0');
     newDiv1.style.setProperty('left', '0');
     newDiv1.style.setProperty('position', 'absolute');
-    document.querySelector("#gridContainer").appendChild(newDiv1);
+    document.querySelector("#dynamicShapeContainer").appendChild(newDiv1);
   }
 
   if(!turnRightGerm) {
@@ -547,7 +563,7 @@ function finishBlock() {
     newDiv2.style.setProperty('top', '0');
     newDiv2.style.setProperty('left', '0');
     newDiv2.style.setProperty('position', 'absolute');
-    document.querySelector("#gridContainer").appendChild(newDiv2);
+    document.querySelector("#dynamicShapeContainer").appendChild(newDiv2);
   }
   
 
@@ -604,13 +620,11 @@ function finishBlock() {
   if(coverage != currentTaken) {
     coverage = currentTaken;
     document.querySelector("#coverageText").textContent = "◕: " + ((coverage / 2500) * 100).toFixed(1) + "%";
-    //document.querySelector("#coverageText").style.setProperty('color', 'red');
   }
   
-
-  
   if(coverage >= 2000) {
-    levelUp();
+    document.querySelector("#coverageText").style.setProperty('color', '#ad6000');
+    document.querySelector("#levelUpBackground").style.setProperty('display', 'flex');
   } else {
     moveGerms();
   }
@@ -1209,42 +1223,142 @@ function gameOver() {
 }
 
 function levelUp() {
+  level++;
+  levelElement = document.querySelector("#levelText").textContent = "Level " + level;
   
+  const newGermElement = document.createElement('div');
+  newGermElement.className = "germ";
+  newGermElement.id = "germ" + level;
+
+  let newLeft = ((Math.floor(Math.random() * 47)) * 2) + 2;
+  let newTop = ((Math.floor(Math.random() * 47)) * 2) + 2;
+  let changed = true;
+
+  while(changed) {
+    changed = false;
+    for (const [i, germ] of Germs.entries()) {
+      while((newLeft >= germ.left) && (newLeft <= germ.left + 8)) {
+        newLeft = ((Math.floor(Math.random() * 47)) * 2) + 2;
+        changed = true;
+      }
+  
+      while((newTop >= germ.top) && (newTop <= germ.top + 8)) {
+        newTop = ((Math.floor(Math.random() * 47)) * 2) + 2;
+        changed = true;
+      }
+    }
+  }
+
+  newGermElement.style.left = newLeft + '%';
+  newGermElement.style.top = newTop + '%';
+
+  let newLeftDir = Math.floor(Math.random() * 2);
+  let newTopDir = Math.floor(Math.random() * 2);
+  if(newLeftDir == 0) {
+    newLeftDir = -2;
+  } else {
+    newLeftDir = 2;
+  }
+
+  if(newTopDir == 0) {
+    newTopDir = -2;
+  } else {
+    newTopDir = 2;
+  }
+
+  const newGerm = {number: level, left: newLeft, top: newTop, leftDirection: newLeftDir, topDirection: newTopDir, flip: 1};
+
+  Germs.push(newGerm);
+  document.querySelector("#germContainer").appendChild(newGermElement);
+}
+
+function continueGame() {
+  levelUp();
+
+  for(let i = 0; i < 50; i++) {
+    for(let j = 0; j < 51; j++) {
+      if(horizontalGrid[i][j] != 0) {
+        horizontalGrid[i][j] = 0;
+        let idToFind = "#h" + i + "_" + j;
+        const elementFound = document.querySelector(idToFind).style;
+        elementFound.setProperty('opacity', '0');
+        elementFound.setProperty('background-color', 'red');
+      }
+      if(verticalGrid[i][j] != 1) {
+        verticalGrid[i][j] = 0;
+        let idToFind = "#v" + i + "_" + j;
+        const elementFound = document.querySelector(idToFind).style;
+        elementFound.setProperty('opacity', '0');
+        elementFound.setProperty('background-color', 'red');
+      }
+    }
+  }
+
+  createGridArray();
+  createCoverArray();
+
+  timeScore = timeScore + (STARTING_TIME - timeLeft);
+  timeLeft = STARTING_TIME;
+  frame = 0;
+  document.querySelector("#coverageText").style.setProperty('color', 'black');
+  document.querySelector("#coverageText").textContent = "◕: 0%";
+
+  let timeString = Math.floor(timeLeft / 60) + ":";
+  if(timeLeft % 60 < 10) {
+    timeString = timeString + "0";
+  }
+  timeString = timeString + (timeLeft % 60);
+
+  document.querySelector("#timerText").textContent = timeString;
+  document.querySelector("#levelUpBackground").style.setProperty('display', 'none');
+  document.querySelector("#dynamicShapeContainer").textContent = "";
+  playerLeft = -1;
+  playerTop = 99;
+  coverage = 0;
+  r.style.setProperty('--playerLeft', playerLeft + '%');
+  r.style.setProperty('--playerTop', playerTop + '%');
+  moveGerms();
 }
 
 function restartGame() {
   for(let i = 0; i < 50; i++) {
     for(let j = 0; j < 51; j++) {
-      if(horizontalGrid[i][j] == 1) {
+      if(horizontalGrid[i][j] != 0) {
         horizontalGrid[i][j] = 0;
         let idToFind = "#h" + i + "_" + j;
-        document.querySelector(idToFind).style.setProperty('opacity', '0');
+        const elementFound = document.querySelector(idToFind).style;
+        elementFound.setProperty('opacity', '0');
+        elementFound.setProperty('background-color', 'red');
       }
-      if(verticalGrid[i][j] == 1) {
+      if(verticalGrid[i][j] != 0) {
         verticalGrid[i][j] = 0;
         let idToFind = "#v" + i + "_" + j;
-        document.querySelector(idToFind).style.setProperty('opacity', '0');
+        const elementFound = document.querySelector(idToFind).style;
+        elementFound.setProperty('opacity', '0');
+        elementFound.setProperty('background-color', 'red');
       }
     }
   }
 
-  horizontalGrid.length = 0;
-  verticalGrid.length = 0;
-  timeLeft = 120;
+  coverage = 0;
+  timeLeft = STARTING_TIME;
   level = 1;
-  lives = 3;
+  lives = STARTING_LIVES;
   frame = 0;
   timeScore = 0;
   Germs.length = 0;
   playerLeft = -1;
   playerTop = 99;
+
+  Germs.length = 0;
   r.style.setProperty('--playerLeft', playerLeft + '%');
   r.style.setProperty('--playerTop', playerTop + '%');
-  document.querySelector("#timerText").textContent = "2:00";
   document.querySelector("#timerText").style.setProperty("color", "black");
   document.querySelector("#livesText").style.setProperty("color", "black");
   document.querySelector("#coverageText").textContent = "◕: 0%";
-  document.querySelector("#livesText").textContent = "❤: 3";
+  document.querySelector("#dynamicShapeContainer").textContent = "";
+  document.querySelector("#germContainer").textContent = "";
+
   setup(false);
   document.querySelector("#endBackground").style.setProperty("display", "none");
   pauseable = true;
