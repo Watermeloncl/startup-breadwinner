@@ -1159,7 +1159,7 @@ function coverGridDown2() {
 
 function keepTime() {
   frame++;
-  if(frame >= 35) {
+  if(frame >= 33) {
     frame = 0;
     timeLeft = timeLeft - 1;
     let minutes = Math.floor(timeLeft / 60);
@@ -1413,7 +1413,7 @@ function saveScore() {
       break;
     } else if(level == prevScore.level) {
       if(timeScore < prevScore.time) {
-        scores.splice(i, 0, newScore());
+        scores.splice(i, 0, newScore);
         found = true;
         break;
       }
