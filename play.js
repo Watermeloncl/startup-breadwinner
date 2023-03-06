@@ -1409,11 +1409,11 @@ function saveScore() {
 
   let found = false;
   for (const [i, prevScore] of scores.entries()) {
-    if (level > prevScore.level) {
+    if ((level - 1) > prevScore.level) {
       scores.splice(i, 0, newScore);
       found = true;
       break;
-    } else if(level == prevScore.level) {
+    } else if((level - 1) == prevScore.level) {
       if(timeScore < prevScore.time) {
         scores.splice(i, 0, newScore);
         found = true;
