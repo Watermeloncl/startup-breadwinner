@@ -1217,6 +1217,8 @@ function loseLife() {
 }
 
 function gameOver() {
+  pauseGerms();
+  started = false;
   pauseable = false;
   document.querySelector("#endBackground").style.setProperty('display', 'flex');
   saveScore();
