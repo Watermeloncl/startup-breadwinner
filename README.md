@@ -12,11 +12,11 @@ A basic outline design from the menu:
 A basic outline design while playing:
 <img src="https://github.com/Watermeloncl/startup-breadwinner/blob/main/Outline%20Design%20Playing.JPG" alt="Design Outline: Playing">
 
-### Key Features:
-- Secure login over HTTPS
-- Saves data such as personal stats, leaderboard, etc.
-- Realtime leaderboard
-- A simple game with lives, level, progress, etc.
-- Ability to pause and come back later on that same level
-- Animated germs gaurding the bread
-- Keystroke action (or, on mobile, button taps) to move and play
+### Key Features:  
+- Secure login over HTTPS  
+- Saves data such as personal stats, leaderboard, etc.  
+- Realtime leaderboard  
+- A simple game with lives, level, progress, timer, etc.  
+- Animated germs with collision detection  
+- Keystroke action to move and play  
+  
