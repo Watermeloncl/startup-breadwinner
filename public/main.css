@@ -64,7 +64,7 @@ button:hover {
 }
 
 .topMenu {
-    background-color: green;
+    background-color: #008000;
     min-width: min-content;
 }
 
@@ -137,9 +137,33 @@ input {
     height: 40%;
     width: 25%;
     min-width: min-content;
+    min-height: min-content;
     justify-content: space-around;
     align-items: center;
     border-radius: 50px;
+}
+
+#indexMainTitle {
+    padding: 0;
+    margin: 0;
+    margin-top: 10px;
+}
+
+#errorMessage {
+    position: fixed;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    height: 10%;
+    min-width: min-content;
+    min-height: min-content;
+    left: 40%;
+    top: 70%;
+    font-weight: 100;
+    font-family: sans-serif;
+    font-size: 1.2em;
+    color: black;
 }
 
 form {
@@ -148,13 +172,26 @@ form {
     justify-content: space-around;
 }
 
-#loginButton {
+#authButtons {
     margin-top: 10px;
     margin-bottom: 35px;
     position: relative;
-    width: 50%;
-    left: 25%;
+    width: 75%;
+    left: 12.5%;
     min-width: min-content;
+    min-height: min-content;
+    display: flex;
+    background-color: transparent;
+}
+
+.loginInputs {
+    margin: 5px 0;
+}
+
+.loginButtons {
+    min-width: min-content;
+    width: 50%;
+    margin: 0 10px;
     padding: 5px 0;
 }
 

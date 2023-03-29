@@ -12,13 +12,20 @@
       <p id="indexTopTitle" class="mainTitle">Breadwinner!<p>
     </header>
     <main>
-      <div id="indexTopMenu" class="topMenu">
-        <div id="indexMainTitle" class="mainTitle">Breadwinner!</div>
-        <div>
-          <input type="text" id="playerName" placeholder="Your name here" maxlength="15" />
-          <button id="loginButton" type="submit" class="submitButton" onclick="login()">Login</button>
+        <div id="indexTopMenu" class="topMenu">
+          <div id="indexMainTitle" class="mainTitle">Breadwinner!</div>
+          <div id="formContainer">
+            <input type="text" id="playerName" class="loginInputs" placeholder="Your name here" maxlength="15" />
+            <input type="text" id="playerPassword" class="loginInputs" placeholder="Password" maxlength="15" />
+            <div id="authButtons">
+              <button id="loginButton" type="submit" class="loginButtons" onclick="login()">Login</button>
+              <button id="registerButton" type="submit" class="loginButtons" onclick="register()">Register</button>
+            </div>
+          </div>
+          <div>
+          </div>
         </div>
-      </div>
+        <div id="errorMessage">User already exists!</div>
     </main>
     <footer>
       <p id="author">Created by Devin Frandsen</p>
