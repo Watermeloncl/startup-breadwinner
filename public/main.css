@@ -520,6 +520,19 @@ h2 {
     align-items: center;
 }
 
+#quoteBox {
+    width: calc(100%);
+    min-height: min-content;
+    background-color: transparent;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    word-wrap: normal;
+    font-style: italic;
+    padding-bottom: 10px;
+}
+
 #tutorialBackButton {
     max-width: 20%;
     padding: 5px 15px;

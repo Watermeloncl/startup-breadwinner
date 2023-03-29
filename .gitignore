@@ -1,3 +1,7 @@
 "Outline Design Menu.JPG"
 "Outline Design Playing.JPG"
 deployWebsite.sh
+node_modules/
+.vscode/
+dbkeys.sh
+cookie.txt

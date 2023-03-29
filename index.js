@@ -1,14 +1,16 @@
-function login() {
-    localStorage.setItem("userName", document.querySelector("#playerName").value);
-    window.location.href = "home.html";
-}
+const express = require('express')
 
-function keyPressed(e) {
-  if(e.code == "NumpadEnter" || e.code == "Enter") {
-    if(document.activeElement.id == "playerName") {
-      login();
-    }
-	}
-}
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
-document.addEventListener("keydown", e => keyPressed(e));
+app.use(express.json());
+app.use(express.static('public'));
+var apiRouter = express.Router();
+app.use('/api', apiRouter);
+
+app.use((_req, res) => {
+  res.sendFile('index.html', { root: 'public' });
+});
+
+const httpService = app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});

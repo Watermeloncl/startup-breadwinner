@@ -117,7 +117,7 @@ function startGame() {
 }
 
 function moveGerms() {
-  timer = setInterval(move, 30);  //Change to an update/redraw function? //20
+  timer = setInterval(move, 30);
   started = true;
 }
 
@@ -1182,8 +1182,8 @@ function keepTime() {
 }
 
 function loseLife() {
-  pauseGerms(); // stop germs
-  started = false;  //player input
+  pauseGerms();
+  started = false;
   lives--;
 
   document.querySelector("#livesText").textContent = "❤: " + lives;
@@ -1434,4 +1434,4 @@ function saveScore() {
 }
 
 setup(true);
-document.addEventListener('keyup', e => keyPressed(e));   //TODO: change to "keyup"
+document.addEventListener('keyup', e => keyPressed(e));
