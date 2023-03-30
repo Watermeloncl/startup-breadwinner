@@ -1,9 +1,8 @@
-function loadScores() {
+async function loadScores() {
   let scores = [];
-  const scoresFromStorage = localStorage.getItem("scores");
-  if(scoresFromStorage) {
-    scores = JSON.parse(scoresFromStorage);
-  }
+
+  const response = await fetch(`/api/loadScores`);
+  scores = await response.json();
 
   const tableBodyElement = document.querySelector("#leaderboardTableBody");
 

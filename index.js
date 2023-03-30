@@ -1,6 +1,7 @@
 const express = require('express');
 const database = require('./database.js');
 const bcrypt = require('bcrypt');
+const { PeerProxy } = require('./peerProxy.js');
 const app = express();
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -21,7 +22,6 @@ apiRouter.post('/auth/createUser', async (req, res) => {
 });
 
 apiRouter.post('/auth/login', async (req, res) => {
-    console.log("entered login endpoint");
     const user = await database.getUser(req.body.username);
     if (user) {
         if (await bcrypt.compare(req.body.password, user.password)) {
