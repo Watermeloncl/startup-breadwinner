@@ -29,25 +29,22 @@ async function createUser(username, password) {
     return user;
 }
 
-function addScore(score) {
-    const query = {};
-    const options = {
-        sort: { name: score.name },
-        limit: 1,
-    };
-    const cursor = scoreCollection.find(query, options);
-    userScore[1] = cursor.toArray;
+async function addScore(score) {
+    const oldScore = await scoreCollection.findOne({name: score.name});
 
-    //TODO debug? Double-check validity?
-    
-    if(userScore[0].level < score.level) {
-        scoreCollection.deleteOne( { name: score.name } );
-        scoreCollection.insertOne(score);
-    } else if(userScore[0].level == score.level) {
-        if(userScore[0].time > score.time) {
-            scoreCollection.deleteOne( { name: score.name });
-            scoreCollection.insertOne(score);
+    if(oldScore != undefined) {
+        await scoreCollection.deleteMany({name: score.name});
+        if(oldScore.level < score.level) {
+            await scoreCollection.deleteOne({name: score.name});
+            await scoreCollection.insertOne(score);
+        } else if(oldScore.level == score.level) {
+            if(oldScore.time > score.time) {
+                await scoreCollection.deleteOne({name: score.name});
+                await scoreCollection.insertOne(score);
+            }
         }
+    } else {
+        scoreCollection.insertOne(score);
     }
 }
 

@@ -20,6 +20,7 @@ async function login() {
     console.log("response status: " + response.status);
 
     if (response.status == 200) {
+      localStorage.setItem("username", username);
       window.location.href = 'home.html';
     } else {
       const errMsg = document.querySelector('#errorMessage');
@@ -49,6 +50,7 @@ async function register() {
     const body = await response.json();
 
     if(response?.status === 201) {
+      localStorage.setItem("username", username);
       window.location.href = "home.html";
     } else {
       const errMsg = document.querySelector('#errorMessage');

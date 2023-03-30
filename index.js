@@ -37,10 +37,8 @@ apiRouter.get('/loadScores', async (req, res) => {
     res.send(scores);
 });
 
-apiRouter.post('/newScore', async (req, res) => {
-    await database.addScore(req.body);
-    //const scores = await database.getHighScores();
-    //res.send(scores);
+apiRouter.post('/new/score', async (req, res) => {
+    database.addScore(req.body);
     res.status(200).send({ msg: 'Added Score' });
 });
 
@@ -55,3 +53,5 @@ app.use((_req, res) => {
 const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+new PeerProxy(httpService);

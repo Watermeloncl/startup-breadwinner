@@ -2,7 +2,7 @@ var r = document.querySelector(':root');
 var s = r.style;
 
 const STARTING_TIME = 180;
-const STARTING_LIVES = 5;
+const STARTING_LIVES = 1;
 
 var playerLeft = -1;
 var playerTop = 99;
@@ -1397,40 +1397,17 @@ function resumeGame() {
   moveGerms();
 }
 
-function saveScore() {
-  const userName = localStorage.getItem('userName');
+async function saveScore() {
+  const username = localStorage.getItem('username');
   const date = new Date().toLocaleDateString();
-  let scores = [];
-  const scoresText = localStorage.getItem('scores');
-  if (scoresText) {
-    scores = JSON.parse(scoresText);
-  }
-  const newScore = { name: userName, level: (level - 1), time: timeScore, date: date };
 
-  let found = false;
-  for (const [i, prevScore] of scores.entries()) {
-    if ((level - 1) > prevScore.level) {
-      scores.splice(i, 0, newScore);
-      found = true;
-      break;
-    } else if((level - 1) == prevScore.level) {
-      if(timeScore < prevScore.time) {
-        scores.splice(i, 0, newScore);
-        found = true;
-        break;
-      }
+  const response = await fetch(`/api/new/score`, {
+    method: 'post',
+    body: JSON.stringify({ name: username, level: (level - 1), time: timeScore, date: date }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
     }
-  }
-
-  if (!found) {
-    scores.push(newScore);
-  }
-
-  if (scores.length > 5) {
-    scores.length = 5;
-  }
-
-  localStorage.setItem('scores', JSON.stringify(scores));
+  });
 }
 
 setup(true);
