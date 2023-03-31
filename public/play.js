@@ -25,9 +25,11 @@ var playerName = localStorage.getItem("username");
 var scores = [];
 
 async function setup(makeGrid) {
-  configureWebSocket();
-  await getLiveScores();
-
+  if(makeGrid) {
+    configureWebSocket();
+    await getLiveScores();
+  }
+  
   let firstLeft = ((Math.floor(Math.random() * 47)) * 2) + 2;
   let firstTop = ((Math.floor(Math.random() * 47)) * 2) + 2;
   r.style.setProperty('--germ1Left', firstLeft + '%');
@@ -1389,6 +1391,11 @@ function restartGame() {
   playerLeft = -1;
   playerTop = 99;
 
+  sendLiveScore();
+  sendEvent('begin', playerName, 0, 0);
+  scores.push({ name: playerName, level: 0, time: 0 });
+  displayScores();
+
   Germs.length = 0;
   r.style.setProperty('--playerLeft', playerLeft + '%');
   r.style.setProperty('--playerTop', playerTop + '%');
@@ -1553,7 +1560,7 @@ function displayScores() {
 
   body.textContent = "";
 
-  for (const [i, score] of scores.entries()) {  //todo change to just up to the first 5
+  for (const [i, score] of scores.entries()) {
     const row = document.createElement('tr');
     const nameTd = document.createElement('td');
     const levelTd = document.createElement('td');
