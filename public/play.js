@@ -164,6 +164,7 @@ function move() {
     if((gridValue = horizontalGrid[((germ.left + 1) / 2) + (germ.leftDirection / 4)][(germ.top + 2 + germ.topDirection) / 2]) != 0) {
       if(gridValue == 1) {
         loseLife();
+        break;
       }
       germ.topDirection = germ.topDirection * -1;
       flipTop = 1;
@@ -172,6 +173,7 @@ function move() {
     if((gridValue = verticalGrid[((germ.top + 1) / 2) + (germ.topDirection / 4)][(germ.left + 2 + germ.leftDirection) / 2]) != 0) {
       if(gridValue == 1) {
         loseLife();
+        break;
       }
       germ.leftDirection = germ.leftDirection * -1;
       flipLeft = 1;
@@ -183,6 +185,7 @@ function move() {
           ((gridValue2 = verticalGrid[((germ.top + 1) / 2) + (germ.topDirection * 0.75)][(germ.left + 2 + germ.leftDirection) / 2]) != 0)) {
             if((gridValue == 1) || gridValue2 == 1) {
               loseLife();
+              break;
             }
             germ.topDirection = germ.topDirection * -1;
             germ.leftDirection = germ.leftDirection * -1;
@@ -1223,7 +1226,7 @@ function loseLife() {
 
   document.querySelector("#livesText").textContent = "❤: " + lives;
 
-  if(lives == 0) {
+  if(lives <= 0) {
     document.querySelector("#livesText").style.setProperty('color', 'red');
     gameOver();
   } else {
