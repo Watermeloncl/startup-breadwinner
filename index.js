@@ -37,23 +37,8 @@ apiRouter.get('/loadScores', async (req, res) => {
     res.send(scores);
 });
 
-apiRouter.get('/liveScores', async (req, res) => {
-    const scores = await database.getLiveScores();
-    res.send(scores);
-});
-
-apiRouter.post('/removeLiveScore', async (req, res) => {
-    database.removeLiveScore(req.body);
-    res.status(200).send({ msg: 'Removed Score' });
-});
-
 apiRouter.post('/new/score', async (req, res) => {
     database.addScore(req.body);
-    res.status(200).send({ msg: 'Added Score' });
-});
-
-apiRouter.post('/addLiveScore', async (req, res) => {
-    database.addLiveScore(req.body);
     res.status(200).send({ msg: 'Added Score' });
 });
 

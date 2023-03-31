@@ -15,20 +15,9 @@ const url = `mongodb+srv://${userName}:${password}@${hostname}`;
 const client = new MongoClient(url);
 const userCollection = client.db('breadwinner').collection('users');
 const scoreCollection = client.db('breadwinner').collection('scores');
-const liveScoreCollection = client.db('breadwinner').collection('liveScores');
 
 function getUser(username) {
     return userCollection.findOne({ username: username });
-}
-
-function getLiveScores() {
-    const query = {};
-    const options = {
-        sort: { level: -1, time: 1 },
-        limit: 5,
-    };
-    const cursor = liveScoreCollection.find(query, options);
-    return cursor.toArray();
 }
 
 async function createUser(username, password) {
@@ -61,31 +50,6 @@ async function addScore(score) {
     }
 }
 
-async function addLiveScore(score) {
-    const oldScore = await liveScoreCollection.findOne({name: score.name});
-
-    if(oldScore != undefined) {
-        await liveScoreCollection.deleteMany({name: score.name});
-        if(oldScore.level < score.level) {
-            await liveScoreCollection.insertOne(score);
-        } else if(oldScore.level == score.level) {
-            if(oldScore.time > score.time) {
-                await liveScoreCollection.insertOne(score);
-            } else {
-                await liveScoreCollection.insertOne(oldScore);
-            }
-        } else {
-            await liveScoreCollection.insertOne(oldScore);
-        }
-    } else {
-        liveScoreCollection.insertOne(score);
-    }
-}
-
-async function removeLiveScore(score) {
-    await liveScoreCollection.deleteMany({name: score.name});
-}
-
 function getHighScores() {
     const query = {};
     const options = {
@@ -101,7 +65,4 @@ module.exports = {
     createUser,
     addScore,
     getHighScores,
-    getLiveScores,
-    addLiveScore,
-    removeLiveScore,
 };

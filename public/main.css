@@ -259,6 +259,8 @@ Play page
 #startButton {
     height: 50%;
     min-height: min-content;
+    min-width: min-content;
+    width: 70%;
     z-index: 11;
     margin: 5px;
 }

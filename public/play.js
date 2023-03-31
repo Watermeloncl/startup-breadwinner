@@ -2,8 +2,9 @@ var r = document.querySelector(':root');
 var s = r.style;
 
 const STARTING_TIME = 180;
-const STARTING_LIVES = 1;
+const STARTING_LIVES = 5;
 
+var loading = true;
 var playerLeft = -1;
 var playerTop = 99;
 var pauseable = false;
@@ -27,7 +28,6 @@ var scores = [];
 async function setup(makeGrid) {
   if(makeGrid) {
     configureWebSocket();
-    await getLiveScores();
   }
   
   let firstLeft = ((Math.floor(Math.random() * 47)) * 2) + 2;
@@ -55,6 +55,12 @@ async function setup(makeGrid) {
   if(makeGrid) {
     createGrid();
   }
+
+  if(loading) {
+    loading = false;
+    document.querySelector('#startButton').textContent = 'Start';
+  }
+
 }
 
 function createGridArray() {
@@ -117,27 +123,21 @@ function createGrid() {
   gridContainer.appendChild(gridContainer2);
 }
 
+function start() {
+  if(!loading) {
+    startGame();
+  }
+}
+
 function startGame() {
   s.setProperty('--startBackgroundDisplay', "none");
   pauseable = true;
   started = true;
 
-  sendLiveScore();
-
-  sendEvent('begin', playerName, 0, 0);
-  scores.push({ name: playerName, level: 0, time: 0 });
+  sendEvent(null, 'start', playerName, 0, 0);
+  scores.push({ id: null, name: playerName, level: 0, time: 0 });
   displayScores();
   moveGerms();
-}
-
-async function sendLiveScore() {
-  const response = await fetch(`/api/addLiveScore`, {
-    method: 'post',
-    body: JSON.stringify({ name: playerName, level: 0, time: 0 }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    }
-  });
 }
 
 function moveGerms() {
@@ -657,7 +657,7 @@ function pauseForLevelUp() {
   document.querySelector("#coverageText").style.setProperty('color', '#ad6000');
   document.querySelector("#levelUpBackground").style.setProperty('display', 'flex');
 
-  sendEvent('update', playerName, level, timeScore + (STARTING_TIME - timeLeft));
+  sendEvent(null, 'update', playerName, level, timeScore + (STARTING_TIME - timeLeft));
 
   const newScore = { name: playerName, level: level, time: timeScore + (STARTING_TIME - timeLeft) };
   updateScore(newScore);
@@ -1257,7 +1257,8 @@ function gameOver() {
   pauseable = false;
   document.querySelector("#endBackground").style.setProperty('display', 'flex');
   saveScore();
-  sendEvent('end', playerName, level, timeScore);
+
+  sendEvent(null, 'end', playerName, level, timeScore);
   const newScore = { name: playerName, level: level, time: timeScore };
   removeScore(newScore);
   displayScores();
@@ -1391,9 +1392,8 @@ function restartGame() {
   playerLeft = -1;
   playerTop = 99;
 
-  sendLiveScore();
-  sendEvent('begin', playerName, 0, 0);
-  scores.push({ name: playerName, level: 0, time: 0 });
+  sendEvent(null, 'start', playerName, 0, 0);
+  scores.push({ id: null, name: playerName, level: 0, time: 0 });
   displayScores();
 
   Germs.length = 0;
@@ -1422,19 +1422,11 @@ function pauseGameButton() {
   }
 }
 
+
 async function homeButton() {
-  sendEvent('end', playerName, level, timeScore);
+  sendEvent(null, 'end', playerName, level, timeScore);
   const newScore = { name: playerName, level: level, time: timeScore };
   removeScore(newScore);
-  displayScores();
-
-  const response = await fetch(`/api/removeLiveScore`, {
-    method: 'post',
-    body: JSON.stringify({ name: playerName, level: level, time: timeScore }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    }
-  });
 
   window.location.href='home.html';
 }
@@ -1469,14 +1461,6 @@ async function saveScore() {
       'Content-type': 'application/json; charset=UTF-8',
     }
   });
-
-  const response2 = await fetch(`/api/removeLiveScore`, {
-    method: 'post',
-    body: JSON.stringify({ name: username, level: level, time: timeScore }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    }
-  });
 }
 
 function configureWebSocket() {
@@ -1492,16 +1476,29 @@ function configureWebSocket() {
   };
 
   socket.onmessage = async (event) => {
-    const incomingEvent = JSON.parse(await event.data.text());
-    const newScore = { name: event.username, level: event.level, time: event.time };
+    const incomingEvent = JSON.parse(await event.data);
 
-    if(incomingEvent.type == 'start') {
+    console.log("before:");
+    console.log(scores);
+
+    console.log("type: " + incomingEvent.type);
+    console.log("name: " + incomingEvent.name);
+    console.log("level: " + incomingEvent.level);
+    console.log("time: " + incomingEvent.time);
+
+    const newScore = { id: incomingEvent, name: incomingEvent.name, level: incomingEvent.level, time: incomingEvent.time };
+    if(incomingEvent.type == 'load') {
+      scores = incomingEvent.scoresArray;
+    } else if(incomingEvent.type == 'start') {
       addScore(newScore);
     } else if(incomingEvent.type == 'end') {
       removeScore(newScore);
     } else if(incomingEvent.type == 'update') {      
       updateScore(newScore);
     }
+
+    console.log("After:")
+    console.log(scores);
 
     displayScores();
   };
@@ -1548,19 +1545,12 @@ function removeScore(newScore) {
   }
 }
 
-async function getLiveScores() {
-  const response = await fetch(`/api/liveScores`);
-  scores = await response.json();
-  console.log(scores);
-  displayScores();
-}
-
 function displayScores() {
   const body = document.querySelector("#liveScoresBody");
 
   body.textContent = "";
 
-  for (const [i, score] of scores.entries()) {
+  for(const [i, score] of scores.entries()) {
     const row = document.createElement('tr');
     const nameTd = document.createElement('td');
     const levelTd = document.createElement('td');
@@ -1598,8 +1588,9 @@ function displayScores() {
   }
 }
 
-function sendEvent(type, name, level, time) {
+function sendEvent(id, type, name, level, time) {
   const event = {
+    id: id,
     type: type,
     name: name,
     level: level,

@@ -13,7 +13,7 @@
     </header>
     <main id="playMain">
       <div id="startBackground" class = "stoppedBackground">
-        <button id="startButton" onclick="startGame()">Start</button>
+        <button id="startButton" onclick="start()">Loading</button>
       </div>
       <div id="levelUpBackground"  class = "stoppedBackground" >
         <div id="congratsText">Congrats!</div>
@@ -33,30 +33,15 @@
             </tr>
           </thead>
           <tbody id="liveScoresBody">
-            <!--<tr>
-              <td class="playTable">Joe</td>
-              <td class="playTable">2</td>
-              <td class="playTable">3:21</td>
-            </tr>
-            <tr>
-              <td class="playTable">Steve</td>
-              <td class="playTable">1</td>
-              <td class="playTable">1:37</td>
-            </tr>
-            <tr>
-              <td class="playTable">Bob</td>
-              <td class="playTable">1</td>
-              <td class="playTable">1:48</td>
-            </tr>-->
           </tbody>
         </table>
       </div>
       <div id="mainBox">
         <div id="mainHeader">
-          <div id="lives" class="topBar"><div id="livesText" class="topBarText">&#10084: 3</div></div>
+          <div id="lives" class="topBar"><div id="livesText" class="topBarText">&#10084: 5</div></div>
           <div id="coverage" class="topBar"><div id="coverageText" class="topBarText">&#9685: 0%</div></div>
-          <div id="level" class="topBar"><div id ="levelText" class="topBarText">Level 4</div></div>
-          <div id="timer" class="topBar"><div id ="timerText" class="topBarText">2:00</div></div>
+          <div id="level" class="topBar"><div id ="levelText" class="topBarText">Level 1</div></div>
+          <div id="timer" class="topBar"><div id ="timerText" class="topBarText">3:00</div></div>
           <div id="playButtonContainer" class="topBar">
             <button id="pauseButton" class="topBarButtons" onclick="pauseGameButton()">
               <div id="playTriangle"></div>
