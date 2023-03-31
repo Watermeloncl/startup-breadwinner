@@ -20,8 +20,14 @@ var timeLeft = STARTING_TIME;
 var frame = 0;
 var timeScore = 0;
 var coverage = 0;
+var socket;
+var playerName = localStorage.getItem("username");
+var scores = [];
 
-function setup(makeGrid) {
+async function setup(makeGrid) {
+  configureWebSocket();
+  await getLiveScores();
+
   let firstLeft = ((Math.floor(Math.random() * 47)) * 2) + 2;
   let firstTop = ((Math.floor(Math.random() * 47)) * 2) + 2;
   r.style.setProperty('--germ1Left', firstLeft + '%');
@@ -113,7 +119,23 @@ function startGame() {
   s.setProperty('--startBackgroundDisplay', "none");
   pauseable = true;
   started = true;
+
+  sendLiveScore();
+
+  sendEvent('begin', playerName, 0, 0);
+  scores.push({ name: playerName, level: 0, time: 0 });
+  displayScores();
   moveGerms();
+}
+
+async function sendLiveScore() {
+  const response = await fetch(`/api/addLiveScore`, {
+    method: 'post',
+    body: JSON.stringify({ name: playerName, level: 0, time: 0 }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    }
+  });
 }
 
 function moveGerms() {
@@ -623,11 +645,22 @@ function finishBlock() {
   }
   
   if(coverage >= 2000) {
-    document.querySelector("#coverageText").style.setProperty('color', '#ad6000');
-    document.querySelector("#levelUpBackground").style.setProperty('display', 'flex');
+    pauseForLevelUp();
   } else {
     moveGerms();
   }
+}
+
+function pauseForLevelUp() {
+  document.querySelector("#coverageText").style.setProperty('color', '#ad6000');
+  document.querySelector("#levelUpBackground").style.setProperty('display', 'flex');
+
+  sendEvent('update', playerName, level, timeScore + (STARTING_TIME - timeLeft));
+
+  const newScore = { name: playerName, level: level, time: timeScore + (STARTING_TIME - timeLeft) };
+  updateScore(newScore);
+
+  displayScores();
 }
 
 function finishShapeLeft() {
@@ -1222,6 +1255,10 @@ function gameOver() {
   pauseable = false;
   document.querySelector("#endBackground").style.setProperty('display', 'flex');
   saveScore();
+  sendEvent('end', playerName, level, timeScore);
+  const newScore = { name: playerName, level: level, time: timeScore };
+  removeScore(newScore);
+  displayScores();
 }
 
 function levelUp() {
@@ -1378,6 +1415,23 @@ function pauseGameButton() {
   }
 }
 
+async function homeButton() {
+  sendEvent('end', playerName, level, timeScore);
+  const newScore = { name: playerName, level: level, time: timeScore };
+  removeScore(newScore);
+  displayScores();
+
+  const response = await fetch(`/api/removeLiveScore`, {
+    method: 'post',
+    body: JSON.stringify({ name: playerName, level: level, time: timeScore }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    }
+  });
+
+  window.location.href='home.html';
+}
+
 function pauseGame() {
   pauseGerms();
   started = false;
@@ -1408,6 +1462,144 @@ async function saveScore() {
       'Content-type': 'application/json; charset=UTF-8',
     }
   });
+
+  const response2 = await fetch(`/api/removeLiveScore`, {
+    method: 'post',
+    body: JSON.stringify({ name: username, level: level, time: timeScore }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    }
+  });
+}
+
+function configureWebSocket() {
+
+  const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+  socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+  socket.onopen = (event) => {
+    console.log("socket open");
+  };
+
+  socket.onclose = (event) => {
+    console.log("socket closed");
+  };
+
+  socket.onmessage = async (event) => {
+    const incomingEvent = JSON.parse(await event.data.text());
+    const newScore = { name: event.username, level: event.level, time: event.time };
+
+    if(incomingEvent.type == 'start') {
+      addScore(newScore);
+    } else if(incomingEvent.type == 'end') {
+      removeScore(newScore);
+    } else if(incomingEvent.type == 'update') {      
+      updateScore(newScore);
+    }
+
+    displayScores();
+  };
+}
+
+function addScore(newScore) {
+  scores.push(newScore);
+}
+
+function updateScore(newScore) {
+  for(const [i, score] of scores.entries()) {
+    if(score.name == newScore.name) {
+      scores.splice(i, 1);
+      break;
+    }
+  }
+
+  let found = false;
+  for(const [i, score] of scores.entries()) {
+    if ((newScore.level) > score.level) {
+      scores.splice(i, 0, newScore);
+      found = true;
+      break;
+    } else if((newScore.level) == score.level) {
+      if(newScore.timeScore < score.time) {
+        scores.splice(i, 0, newScore);
+        found = true;
+        break;
+      }
+    }
+  }
+
+  if(!found) {
+    scores.push(newScore);
+  }
+}
+
+function removeScore(newScore) {
+  for(const [i, score] of scores.entries()) {
+    if(newScore.name == score.name) {
+      scores.splice(i, 1);
+      break;
+    }
+  }
+}
+
+async function getLiveScores() {
+  const response = await fetch(`/api/liveScores`);
+  scores = await response.json();
+  console.log(scores);
+  displayScores();
+}
+
+function displayScores() {
+  const body = document.querySelector("#liveScoresBody");
+
+  body.textContent = "";
+
+  for (const [i, score] of scores.entries()) {  //todo change to just up to the first 5
+    const row = document.createElement('tr');
+    const nameTd = document.createElement('td');
+    const levelTd = document.createElement('td');
+    const timeTd = document.createElement('td');
+
+    nameTd.classList.add('playTable');
+    levelTd.classList.add('playTable');
+    timeTd.classList.add('playTable');
+
+    if(score.name == playerName) {
+      nameTd.textContent = "me";
+    } else {
+      nameTd.textContent = score.name;
+    }
+
+    levelTd.textContent = score.level;
+
+    let timeValue = "";
+
+    timeValue = Math.floor(score.time / 60) + ":";
+    if(score.time % 60 < 10) {
+      timeValue = timeValue + "0";
+    }
+    timeValue = timeValue + (score.time % 60);
+
+    timeTd.textContent = timeValue;
+
+    row.appendChild(nameTd);
+    row.appendChild(levelTd);
+    row.appendChild(timeTd);
+    body.appendChild(row);
+    if(i == 4) {
+      break;
+    }
+  }
+}
+
+function sendEvent(type, name, level, time) {
+  const event = {
+    type: type,
+    name: name,
+    level: level,
+    time: time,
+  };
+
+  socket.send(JSON.stringify(event));
 }
 
 setup(true);

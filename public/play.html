@@ -32,8 +32,8 @@
               <th class="playTable">Time</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
+          <tbody id="liveScoresBody">
+            <!--<tr>
               <td class="playTable">Joe</td>
               <td class="playTable">2</td>
               <td class="playTable">3:21</td>
@@ -47,7 +47,7 @@
               <td class="playTable">Bob</td>
               <td class="playTable">1</td>
               <td class="playTable">1:48</td>
-            </tr>
+            </tr>-->
           </tbody>
         </table>
       </div>
@@ -63,7 +63,7 @@
               <div id="pauseLeft" class="pause"></div>
               <div id="pauseRight" class="pause"></div>
             </button>
-            <button id="homeButton" class="topBarButtons" onclick="location.href='home.html';">
+            <button id="homeButton" class="topBarButtons" onclick="homeButton()">
               <div id="homeSquare" class="homeSymbol"></div>
               <div id="homeTriangle" class="homeSymbol"></div>
             </button>
