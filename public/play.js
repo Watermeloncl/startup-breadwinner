@@ -1481,14 +1481,6 @@ function configureWebSocket() {
   socket.onmessage = async (event) => {
     const incomingEvent = JSON.parse(await event.data);
 
-    console.log("before:");
-    console.log(scores);
-
-    console.log("type: " + incomingEvent.type);
-    console.log("name: " + incomingEvent.name);
-    console.log("level: " + incomingEvent.level);
-    console.log("time: " + incomingEvent.time);
-
     const newScore = { id: incomingEvent, name: incomingEvent.name, level: incomingEvent.level, time: incomingEvent.time };
     if(incomingEvent.type == 'load') {
       scores = incomingEvent.scoresArray;
@@ -1499,9 +1491,6 @@ function configureWebSocket() {
     } else if(incomingEvent.type == 'update') {      
       updateScore(newScore);
     }
-
-    console.log("After:")
-    console.log(scores);
 
     displayScores();
   };
