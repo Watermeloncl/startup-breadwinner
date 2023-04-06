@@ -1468,6 +1468,11 @@ async function saveScore() {
 
 function configureWebSocket() {
 
+  let port = window.location.port;
+  if (process.env.NODE_ENV !== 'production') {
+    port = 4000;
+  }
+
   const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
   socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
   socket.onopen = (event) => {

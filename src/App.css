@@ -17,6 +17,12 @@ a {
   color: unset;
 }
 
+#body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -570,6 +576,16 @@ h2 {
   word-wrap: normal;
   font-style: italic;
   padding-bottom: 10px;
+}
+
+#quote {
+  margin: 0;
+  padding: 0;
+}
+
+#author {
+  margin: 0;
+  padding: 0;
 }
 
 #tutorialBackButton {

@@ -8,7 +8,7 @@ import { Leaderboard } from './Leaderboard';
 
 function App() {
   return (
-    <body>
+    <div id="body">
       <header>
         <p id="indexTopTitle" className="mainTitle">Breadwinner!</p>
       </header>
@@ -32,12 +32,12 @@ function App() {
         <p id="author">Created by Devin Frandsen</p>
         <p id="source"><a href="https://github.com/Watermeloncl/startup-breadwinner">Source</a></p>
       </footer>
-  </body>
+    </div>
   );
 }
 
-/*function NotFound() {
+function NotFound() {
   return <main>404: Return to sender. Address unknown.</main>;
-}*/
+}
 
 export default App;
