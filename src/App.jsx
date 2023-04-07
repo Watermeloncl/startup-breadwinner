@@ -20,12 +20,6 @@ function App() {
         <Route path='/tutorial' element={<Tutorial/>}/>
         <Route path='/leaderboard' element={<Leaderboard/>}/>
         <Route path='*' element={<NotFound/>}/>
-
-        {/*<Route path='/' element={<Login userName={userName} authState={authState} onAuthChange={(userName, authState) => {setAuthState(authState); setUserName(userName); }} />} exact/>
-        <Route path='/play' element={<Play userName={userName} />} />
-        <Route path='/scores' element={<Scores />} />
-        <Route path='/about' element={<About />} />
-        <Route path='*' element={<NotFound />} />*/}
       </Routes>
 
       <footer>

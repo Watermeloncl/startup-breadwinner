@@ -3,16 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 export function Login() {
   const navigate = useNavigate();
+  const [errorMessage, setMessage] = React.useState("");
+  const [errorDisplay, setDisplay] = React.useState("none");
 
   async function login() {
     const username = document.querySelector('#playerName').value;
     const password = document.querySelector('#playerPassword').value;
   
     if(username !== "" && password !== "") {
-      const errMsg = document.querySelector('#errorMessage');
-      errMsg.style.setProperty("display", "flex");
-      errMsg.textContent = "Loading...";
-  
+      setDisplay("flex");
+      setMessage("Loading...");
+
       const response = await fetch(`/api/auth/login`, {
         method: 'post',
         body: JSON.stringify({ username: username, password: password }),
@@ -21,17 +22,14 @@ export function Login() {
         },
       });
   
-      console.log("hello world!");
       const body = await response.json();
-      console.log("response status: " + response.status);
   
       if (response.status === 200) {
         localStorage.setItem("username", username);
         navigate('/home');
       } else {
-        const errMsg = document.querySelector('#errorMessage');
-        errMsg.style.setProperty("display", "flex");
-        errMsg.textContent = body.msg;
+        setDisplay("flex");
+        setMessage(body.msg);
       }
     }
   }
@@ -41,9 +39,8 @@ export function Login() {
     const password = document.querySelector('#playerPassword').value;
   
     if(username !== "" && password !== "") {
-      const errMsg = document.querySelector('#errorMessage');
-      errMsg.style.setProperty("display", "flex");
-      errMsg.textContent = "Loading...";
+      setDisplay("flex");
+      setMessage("Loading...");
   
       const response = await fetch(`/api/auth/createUser`, {
         method: 'post',
@@ -59,9 +56,8 @@ export function Login() {
         localStorage.setItem("username", username);
         navigate('/home');
       } else {
-        const errMsg = document.querySelector('#errorMessage');
-        errMsg.style.setProperty("display", "flex");
-        errMsg.textContent = body.msg;
+        setDisplay("flex");
+        setMessage(body.msg);
       }
     }
   }
@@ -91,7 +87,7 @@ export function Login() {
         <div>
         </div>
       </div>
-      <div id="errorMessage">User already exists!</div>
+      <div id="errorMessage" style={{display: errorDisplay}}>{errorMessage}</div>
     </main>
   );
 }
